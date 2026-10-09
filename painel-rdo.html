@@ -1,0 +1,2543 @@
+<meta charset="utf-8">
+<title>Diário de Obra DG</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* ============ TOKENS ============ */
+:root{
+  color-scheme:light;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-display:"IBM Plex Sans Condensed",var(--font-body);
+  --font-mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+
+  /* concreto (default) */
+  --plane:#eef0ea;
+  --surface:#ffffff;
+  --surface-2:#f4f5f0;
+  --ink:#1c1f1a;
+  --ink-soft:#565a50;
+  --muted:#8a8d80;
+  --line:#d9dbcf;
+  --line-strong:#c2c4b6;
+  --accent:#235a8f;
+  --accent-ink:#ffffff;
+  --accent-soft:#e2ecf5;
+  --accent-2:#c9781f;
+  --bg-pattern:none;
+  --shadow:0 1px 2px rgba(20,22,16,.06), 0 4px 14px rgba(20,22,16,.06);
+
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b;
+  --cat-1:#2a78d6; --cat-2:#eb6834; --cat-3:#1baf7a; --cat-4:#eda100;
+  --cat-5:#e87ba4; --cat-6:#008300; --cat-7:#4a3aa7; --cat-8:#e34948;
+
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+
+:root[data-bg="blueprint"]{
+  color-scheme:dark;
+  --plane:#0c3a5e;
+  --surface:#0f4a75;
+  --surface-2:#0d4169;
+  --ink:#eef6fc;
+  --ink-soft:#bcd8ec;
+  --muted:#8fb8d6;
+  --line:rgba(255,255,255,.22);
+  --line-strong:rgba(255,255,255,.34);
+  --accent:#ffcb47;
+  --accent-ink:#12324a;
+  --accent-soft:rgba(255,203,71,.16);
+  --accent-2:#8fd0ff;
+  --bg-pattern:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, transparent 1px 28px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 28px);
+  --shadow:0 1px 2px rgba(0,0,0,.35), 0 6px 18px rgba(0,0,0,.35);
+}
+
+:root[data-bg="aco"]{
+  color-scheme:light;
+  --plane:#e6eaed;
+  --surface:#ffffff;
+  --surface-2:#eef1f3;
+  --ink:#1a2430;
+  --ink-soft:#54626f;
+  --muted:#8996a1;
+  --line:#ccd4da;
+  --line-strong:#b3bcc3;
+  --accent:#3a6ea5;
+  --accent-ink:#ffffff;
+  --accent-soft:#e4ecf3;
+  --accent-2:#6c7a86;
+  --bg-pattern:none;
+  --shadow:0 1px 2px rgba(15,25,35,.07), 0 4px 14px rgba(15,25,35,.08);
+}
+
+:root[data-bg="canteiro"]{
+  color-scheme:dark;
+  --plane:#14171a;
+  --surface:#1c2023;
+  --surface-2:#22262a;
+  --ink:#f2f1ea;
+  --ink-soft:#bcbeb4;
+  --muted:#8b8d84;
+  --line:rgba(255,255,255,.12);
+  --line-strong:rgba(255,255,255,.20);
+  --accent:#f2a900;
+  --accent-ink:#181a12;
+  --accent-soft:rgba(242,169,0,.14);
+  --accent-2:#e0562c;
+  --bg-pattern:
+    repeating-linear-gradient(135deg, rgba(242,169,0,.05) 0 2px, transparent 2px 18px);
+  --shadow:0 1px 2px rgba(0,0,0,.5), 0 6px 18px rgba(0,0,0,.5);
+}
+
+:root[data-bg="kraft"]{
+  color-scheme:light;
+  --plane:#efe6d2;
+  --surface:#faf3e2;
+  --surface-2:#f2e8d1;
+  --ink:#2c2213;
+  --ink-soft:#6c5c3d;
+  --muted:#948457;
+  --line:#dcc9a0;
+  --line-strong:#c7b184;
+  --accent:#a1442a;
+  --accent-ink:#fbf1e2;
+  --accent-soft:#ecd8c6;
+  --accent-2:#5c7a4c;
+  --bg-pattern:none;
+  --shadow:0 1px 2px rgba(60,45,15,.10), 0 4px 14px rgba(60,45,15,.10);
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--plane);
+  background-image:var(--bg-pattern);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  transition:background-color .25s ease,color .25s ease;
+}
+h1,h2,h3,h4{font-family:var(--font-display);margin:0;text-wrap:balance;}
+p{margin:0;}
+button{font-family:inherit;}
+img{max-width:100%;display:block;}
+svg{width:1em;height:1em;flex:none;}
+[hidden]{display:none!important;}
+a{color:var(--accent);}
+.mono{font-family:var(--font-mono);}
+.tabular{font-variant-numeric:tabular-nums;}
+
+/* ============ LAYOUT SHELL ============ */
+.app-shell{max-width:1180px;margin:0 auto;padding:0 16px 64px;}
+
+.appbar{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:30;
+  background:var(--surface); border-bottom:1px solid var(--line);
+  box-shadow:var(--shadow);
+}
+.appbar-inner{
+  max-width:1180px;margin:0 auto;padding:10px 16px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.brandblock{display:flex;align-items:center;gap:10px;min-width:0;}
+.brand-stamp{
+  width:42px;height:42px;border-radius:8px;flex:none;
+  background:var(--accent);color:var(--accent-ink);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-weight:600;font-size:11px;letter-spacing:.02em;
+}
+.brand-text{min-width:0;}
+.brand-text .t1{font-family:var(--font-display);font-weight:700;font-size:17px;line-height:1.1;letter-spacing:.01em;}
+.brand-text .t2{font-size:11.5px;color:var(--ink-soft);letter-spacing:.03em;text-transform:uppercase;}
+
+.tabs{display:flex;gap:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;margin-left:auto;}
+.tab{
+  border:none;background:transparent;color:var(--ink-soft);
+  font:inherit;font-weight:600;font-size:13.5px;padding:7px 14px;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);}
+.tab svg{width:16px;height:16px;flex:none;}
+
+.icon-btn{
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;flex:none;position:relative;
+}
+.icon-btn:hover{border-color:var(--line-strong);}
+.icon-btn svg{width:18px;height:18px;}
+
+.mode-pill{
+  font-size:11.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+  padding:4px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink-soft);
+  border:1px solid var(--line);display:flex;align-items:center;gap:5px;
+}
+.mode-pill.local{color:var(--accent-2);border-color:var(--accent-2);}
+
+/* ============ POPOVER (theme picker) ============ */
+.popover-wrap{position:relative;flex:none;}
+.popover{
+  position:absolute;right:0;top:calc(100% + 8px);width:272px;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.18);padding:14px;z-index:40;
+}
+.popover h4{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-soft);margin-bottom:10px;}
+.swatch-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.swatch{
+  border:1.5px solid var(--line);border-radius:10px;padding:8px;cursor:pointer;text-align:left;
+  background:var(--surface-2);
+}
+.swatch[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft);}
+.swatch .chip{height:28px;border-radius:6px;margin-bottom:6px;}
+.swatch .lbl{font-size:12px;font-weight:600;}
+.swatch .sub{font-size:10.5px;color:var(--muted);}
+.chip-concreto{background:linear-gradient(135deg,#eef0ea,#fff);}
+.chip-blueprint{background:linear-gradient(135deg,#0c3a5e,#155a8c);}
+.chip-aco{background:linear-gradient(135deg,#e6eaed,#c9d2d8);}
+.chip-canteiro{background:linear-gradient(135deg,#14171a,#2c2f22);}
+.chip-kraft{background:linear-gradient(135deg,#efe6d2,#e2cfa3);}
+
+/* ============ GENERIC COMPONENTS ============ */
+.btn{
+  font:inherit;font-weight:600;font-size:13.5px;border-radius:9px;padding:9px 16px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;
+  display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+}
+.btn svg{width:16px;height:16px;}
+.btn:hover{border-color:var(--line-strong);}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
+.btn-primary:hover{filter:brightness(1.05);}
+.btn-ghost{background:transparent;border-color:transparent;}
+.btn-danger{color:var(--critical);}
+.btn-sm{padding:6px 11px;font-size:12.5px;}
+.btn[disabled]{opacity:.45;cursor:not-allowed;}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);}
+.section-title{font-size:15px;font-weight:700;font-family:var(--font-display);display:flex;align-items:center;gap:8px;}
+.section-title svg{width:17px;height:17px;}
+.section-sub{font-size:12.5px;color:var(--ink-soft);}
+
+.banner{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;border:1px solid var(--line);margin-bottom:16px;}
+.banner svg{width:18px;height:18px;flex:none;margin-top:1px;}
+.banner.crit{background:color-mix(in srgb, var(--critical) 12%, var(--surface));border-color:color-mix(in srgb, var(--critical) 40%, var(--line));}
+.banner.info{background:var(--accent-soft);border-color:var(--line);}
+.banner .b-title{font-weight:700;font-size:13.5px;margin-bottom:2px;}
+.banner .b-body{font-size:12.5px;color:var(--ink-soft);}
+.banner ul{margin:6px 0 0;padding-left:18px;font-size:12.5px;}
+
+.empty{padding:36px 20px;text-align:center;color:var(--ink-soft);}
+.empty svg{width:34px;height:34px;margin:0 auto 10px;opacity:.5;}
+.empty .e-title{font-weight:700;color:var(--ink);margin-bottom:4px;}
+
+.demo-badge{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent-2);background:var(--accent-soft);border:1px solid var(--accent-2);border-radius:6px;padding:2px 7px;}
+
+/* ============ PAINEL (dashboard) ============ */
+.painel-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:20px 0 14px;flex-wrap:wrap;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.stat{padding:16px;display:flex;flex-direction:column;gap:6px;}
+.stat .s-label{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px;}
+.stat .s-label svg{width:15px;height:15px;}
+.stat .s-value{font-family:var(--font-mono);font-size:26px;font-weight:600;line-height:1;}
+.stat .s-sub{font-size:12px;color:var(--ink-soft);}
+.stat .s-value.warn{color:var(--serious);}
+.stat .s-value.crit{color:var(--critical);}
+
+.chart-row{display:grid;grid-template-columns:1.3fr 1fr;gap:12px;margin-bottom:18px;align-items:stretch;}
+.chart-card{padding:16px 16px 8px;position:relative;}
+.chart-card .cc-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.chart-card .cc-head h3{font-size:14px;}
+.chart-card .cc-head span{font-size:11.5px;color:var(--muted);}
+.chart-svg{width:100%;display:block;overflow:visible;}
+.bar-rect{transition:opacity .15s;cursor:pointer;}
+.bar-rect:hover, .bar-rect:focus{opacity:.82;}
+.bar-label{font-family:var(--font-mono);font-size:11px;fill:var(--ink-soft);text-anchor:middle;}
+.axis-label{font-family:var(--font-body);font-size:10.5px;fill:var(--muted);text-anchor:middle;}
+.gridline{stroke:var(--line);stroke-width:1;}
+
+.viz-tooltip{
+  position:absolute;pointer-events:none;background:var(--ink);color:var(--surface);
+  font-size:11.5px;font-family:var(--font-mono);padding:5px 9px;border-radius:7px;
+  transform:translate(-50%,-100%);white-space:nowrap;z-index:20;opacity:0;transition:opacity .1s;
+  box-shadow:0 4px 10px rgba(0,0,0,.25);
+}
+.viz-tooltip.show{opacity:1;}
+
+.weather-strip{display:flex;gap:8px;align-items:center;overflow-x:auto;padding:4px 2px;}
+.w-day{display:flex;flex-direction:column;align-items:center;gap:4px;flex:none;min-width:40px;}
+.w-day svg{width:20px;height:20px;color:var(--accent);}
+.w-day .wd-label{font-size:10px;color:var(--muted);font-family:var(--font-mono);}
+
+/* ============ DIÁRIO (list) ============ */
+.month-tabs{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;margin-top:14px;scrollbar-width:thin;}
+.month-tab{
+  flex:none;font:inherit;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);cursor:pointer;white-space:nowrap;
+}
+.month-tab:hover{border-color:var(--accent);color:var(--ink);}
+.month-tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
+.month-tab .mt-count{opacity:.75;margin-left:5px;font-weight:500;}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 14px;}
+.filter-bar .grow{flex:1 1 220px;}
+.input, .select, textarea{
+  width:100%;font:inherit;font-size:13.5px;padding:8px 11px;border-radius:9px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);
+}
+.input:focus, .select:focus, textarea:focus, .btn:focus-visible, .icon-btn:focus-visible, .tab:focus-visible{
+  outline:2px solid var(--accent);outline-offset:1px;
+}
+textarea{resize:vertical;min-height:64px;font-family:var(--font-body);}
+
+.rdo-list{display:flex;flex-direction:column;gap:10px;}
+.rdo-card{padding:14px 16px;cursor:pointer;}
+.rdo-card:hover{border-color:var(--line-strong);}
+.rc-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+.rc-id{font-family:var(--font-mono);font-size:12px;color:var(--muted);}
+.rc-title{font-weight:700;font-size:15px;margin-top:2px;}
+.rc-meta{font-size:12.5px;color:var(--ink-soft);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;}
+.rc-meta span{display:inline-flex;align-items:center;gap:4px;}
+.rc-meta svg{width:13px;height:13px;}
+.rc-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none;}
+.rc-actions{display:flex;gap:6px;margin-top:8px;}
+
+.status-chip, .severity-chip{
+  font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;display:inline-flex;align-items:center;gap:5px;
+  border:1px solid transparent;
+}
+.status-chip svg, .severity-chip svg{width:12px;height:12px;}
+.chip-rascunho{background:var(--surface-2);color:var(--ink-soft);border-color:var(--line);}
+.chip-emitido{background:color-mix(in srgb, var(--good) 16%, var(--surface));color:color-mix(in srgb, var(--good) 70%, var(--ink));border-color:color-mix(in srgb, var(--good) 40%, var(--line));}
+.chip-baixa{background:color-mix(in srgb, var(--good) 14%, var(--surface));color:var(--ink);}
+.chip-media{background:color-mix(in srgb, var(--warning) 22%, var(--surface));color:var(--ink);}
+.chip-alta{background:color-mix(in srgb, var(--serious) 24%, var(--surface));color:var(--ink);}
+.chip-critica{background:color-mix(in srgb, var(--critical) 20%, var(--surface));color:var(--ink);}
+
+.confirm-bar{display:flex;align-items:center;gap:10px;background:color-mix(in srgb, var(--critical) 10%, var(--surface));border:1px solid color-mix(in srgb, var(--critical) 35%, var(--line));border-radius:9px;padding:8px 10px;margin-top:8px;font-size:12.5px;}
+.confirm-bar strong{flex:1;}
+
+/* ============ RDO DETAIL ============ */
+.detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0;}
+.detail-item{padding:11px 13px;}
+.detail-item .di-label{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:600;}
+.detail-item .di-value{font-size:14px;margin-top:2px;display:flex;align-items:center;gap:5px;}
+.detail-item .di-value svg{width:14px;height:14px;}
+.detail-table{width:100%;border-collapse:collapse;font-size:13px;}
+.detail-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line);}
+.detail-table td{padding:7px 8px;border-bottom:1px solid var(--line);}
+.act-block{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:var(--surface-2);}
+.act-block .ab-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+.act-block .ab-desc{font-size:13.5px;margin:4px 0 8px;}
+.progress-track{height:6px;background:var(--line);border-radius:999px;overflow:hidden;flex:1;}
+.progress-fill{height:100%;border-radius:999px;background:var(--accent);}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-top:8px;}
+.photo-tile{position:relative;border-radius:9px;overflow:hidden;aspect-ratio:1;background:var(--surface);border:1px solid var(--line);}
+.photo-tile img{width:100%;height:100%;object-fit:cover;}
+.photo-tile .p-cap{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(to top, rgba(0,0,0,.65), transparent);color:#fff;font-size:10px;padding:10px 6px 4px;}
+.photo-add-tile{
+  aspect-ratio:1;border:1.5px dashed var(--line-strong);border-radius:9px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  color:var(--ink-soft);font-size:11px;cursor:pointer;background:var(--surface);
+}
+.photo-add-tile:hover{border-color:var(--accent);color:var(--accent);}
+.photo-add-tile svg{width:20px;height:20px;}
+.photo-tile .p-remove{
+  position:absolute;top:4px;right:4px;width:20px;height:20px;border-radius:50%;
+  background:rgba(0,0,0,.55);color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.photo-tile .p-remove svg{width:12px;height:12px;}
+.photo-cap-input{width:100%;font-size:11px;padding:4px 6px;margin-top:4px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);}
+.desc-photo-row{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:14px;align-items:start;margin-top:8px;}
+.desc-photo-row .field textarea{min-height:118px;height:100%;}
+.desc-photo-row .dp-photos{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--surface-2);}
+.desc-photo-row .dp-photos label{display:flex;align-items:center;gap:5px;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink-soft);margin-bottom:6px;}
+.desc-photo-row .dp-photos label svg{width:13px;height:13px;}
+.desc-photo-row .photo-grid{grid-template-columns:repeat(auto-fill,minmax(64px,1fr));}
+@media (max-width:700px){
+  .desc-photo-row{grid-template-columns:1fr;}
+}
+
+/* ============ FORM VIEW ============ */
+.form-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 14px;flex-wrap:wrap;}
+.form-section{margin-bottom:16px;padding:16px;}
+.form-section h3{font-size:14px;margin-bottom:2px;display:flex;align-items:center;gap:7px;}
+.form-section .fs-sub{font-size:12px;color:var(--ink-soft);margin-bottom:12px;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:11.5px;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.02em;}
+.field-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.field-grid.g3{grid-template-columns:repeat(3,1fr);}
+.field-grid.g2{grid-template-columns:repeat(2,1fr);}
+.span-2{grid-column:span 2;}
+.span-4{grid-column:span 4;}
+
+.row-table{width:100%;border-collapse:collapse;}
+.row-table th{font-size:11px;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 6px 6px;}
+.row-table td{padding:4px 6px 4px 0;vertical-align:middle;}
+.row-table tr+tr td{padding-top:6px;}
+.row-remove{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--critical);cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.row-remove svg{width:14px;height:14px;}
+.add-row-btn{margin-top:8px;}
+
+.activity-card{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:var(--surface-2);}
+.activity-card .ac-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.activity-card .ac-num{font-family:var(--font-mono);font-size:12px;color:var(--muted);}
+.range-row{display:flex;align-items:center;gap:10px;}
+.range-row input[type=range]{flex:1;accent-color:var(--accent);}
+.range-val{font-family:var(--font-mono);font-weight:600;font-size:13px;width:40px;text-align:right;}
+
+.occ-row{display:grid;grid-template-columns:1fr 150px 40px;gap:8px;margin-bottom:8px;align-items:start;}
+
+.form-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;background:var(--plane);padding:14px 0 10px;margin-top:6px;border-top:1px solid var(--line);}
+.readonly-note{font-size:12.5px;color:var(--ink-soft);background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:8px 11px;margin-bottom:12px;}
+
+.import-card{border:1.5px dashed var(--accent);background:var(--accent-soft);}
+.import-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.import-row .import-icon{width:38px;height:38px;border-radius:10px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:none;color:var(--accent);}
+.import-row .import-icon svg{width:20px;height:20px;}
+.import-text{flex:1;min-width:180px;}
+.import-text strong{font-size:13.5px;}
+.import-text p{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+.spin svg, svg.spin{animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.import-log{margin-top:10px;font-size:12.5px;}
+.import-log ul{margin:6px 0 0;padding-left:18px;}
+.import-log .warn-line{color:var(--serious);}
+
+/* lightbox (ampliar foto) */
+.lightbox{
+  position:fixed;inset:0;z-index:80;background:rgba(10,12,10,.86);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;
+  padding:calc(20px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));
+  cursor:zoom-out;animation:lb-in .15s ease;
+}
+.lightbox[hidden]{display:none;}
+@keyframes lb-in{from{opacity:0;}to{opacity:1;}}
+.lightbox img{max-width:min(92vw,1100px);max-height:80vh;object-fit:contain;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);cursor:default;background:#111;}
+.lightbox-cap{color:#fff;font-size:13.5px;text-align:center;max-width:80vw;cursor:default;}
+.lightbox-toolbar{display:flex;gap:10px;cursor:default;}
+.lb-action{
+  display:flex;align-items:center;gap:6px;font:inherit;font-size:13px;font-weight:600;
+  padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;
+  border:1px solid rgba(255,255,255,.28);cursor:pointer;
+}
+.lb-action:hover{background:rgba(255,255,255,.22);}
+.lb-action svg{width:15px;height:15px;}
+.lb-action:disabled{opacity:.5;cursor:default;}
+.lightbox-close{
+  position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:16px;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:22px;line-height:1;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.lightbox-close:hover{background:rgba(255,255,255,.22);}
+.photo-tile img, .photo-grid .photo-tile img{cursor:zoom-in;}
+
+/* toast */
+.toast-wrap{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;}
+.toast{background:var(--ink);color:var(--surface);font-size:13px;padding:9px 16px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.25);opacity:0;transform:translateY(6px);transition:all .2s;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* responsive */
+@media (max-width:860px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .chart-row{grid-template-columns:1fr;}
+  .field-grid, .field-grid.g3, .field-grid.g2{grid-template-columns:repeat(2,1fr);}
+  .span-4{grid-column:span 2;}
+  .span-2{grid-column:span 2;}
+  .detail-grid{grid-template-columns:1fr;}
+}
+@media (max-width:520px){
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .field-grid, .field-grid.g3, .field-grid.g2{grid-template-columns:1fr;}
+  .span-4, .span-2{grid-column:span 1;}
+  .occ-row{grid-template-columns:1fr;}
+  .tabs .tab-label{display:none;}
+  .brand-text .t2{display:none;}
+  .popover{right:-8px;width:calc(100vw - 32px);max-width:300px;}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none!important;animation:none!important;}
+}
+</style>
+
+<div class="app-shell">
+  <header class="appbar">
+    <div class="appbar-inner">
+      <div class="brandblock">
+        <div class="brand-stamp">RDO</div>
+        <div class="brand-text">
+          <div class="t1">Diário de Obra</div>
+          <div class="t2" id="brandSub">DG Montagens Industriais</div>
+        </div>
+      </div>
+
+      <nav class="tabs" role="tablist" aria-label="Seções">
+        <button class="tab" data-view="painel" role="tab" aria-selected="true" onclick="setView('painel')"></button>
+        <button class="tab" data-view="diario" role="tab" aria-selected="false" onclick="setView('diario')"></button>
+      </nav>
+
+      <span class="mode-pill" id="modePill" title="Origem dos dados"></span>
+
+      <div class="popover-wrap">
+        <button class="icon-btn" id="themeBtn" title="Escolher fundo" onclick="toggleThemePopover()"></button>
+        <div class="popover" id="themePopover" hidden></div>
+      </div>
+    </div>
+  </header>
+
+  <main id="mainArea">
+    <section id="view-painel"></section>
+    <section id="view-diario" hidden></section>
+    <section id="view-form" hidden></section>
+  </main>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<div class="lightbox" id="lightbox" hidden onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()" aria-label="Fechar">&times;</button>
+  <img id="lightboxImg" src="" alt="Foto ampliada" onclick="event.stopPropagation()">
+  <div class="lightbox-toolbar" id="lightboxToolbar" onclick="event.stopPropagation()"></div>
+  <div class="lightbox-cap" id="lightboxCap" onclick="event.stopPropagation()"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="./rdos-seed.js"></script>
+<script>
+/* =========================================================================
+   ÍCONES (SVG inline, traço único, sem dependências externas)
+   ========================================================================= */
+const ICON = {
+  grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>',
+  list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.4" fill="currentColor" stroke="none"/></svg>',
+  palette:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.9 2-2 0-.6-.2-1-.5-1.4-.3-.4-.5-.8-.5-1.3 0-.9.8-1.6 1.7-1.6H17a4 4 0 0 0 4-4c0-4.4-4-7.7-9-7.7Z"/><circle cx="7.5" cy="10.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="9.5" cy="7" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.2" cy="7" r="1.1" fill="currentColor" stroke="none"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4.8c0-.4.3-.8.8-.8h4.4c.5 0 .8.4.8.8V7"/><path d="M6.5 7l.8 12c0 .8.7 1.5 1.5 1.5h6.4c.8 0 1.5-.7 1.5-1.5l.8-12"/></svg>',
+  camera:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5c0-.8.6-1.5 1.4-1.5h1.6l.9-1.6c.2-.4.6-.6 1-.6h6.2c.4 0 .8.2 1 .6l.9 1.6h1.6c.8 0 1.4.7 1.4 1.5V18c0 .8-.6 1.5-1.4 1.5H5.4C4.6 19.5 4 18.8 4 18V8.5Z"/><circle cx="12" cy="13" r="3.2"/></svg>',
+  download:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 11 12 15.5 16.5 11"/><path d="M5 19h14"/></svg>',
+  pencil:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5 4.6 16 15.8 4.8a1.6 1.6 0 0 1 2.3 0l1 1a1.6 1.6 0 0 1 0 2.3L8 19.3z"/><path d="M14 6.7l3.3 3.3"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9 17.5 20 6.5"/></svg>',
+  dash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="12" x2="18" y2="12"/></svg>',
+  triangle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 21 19H3Z"/><line x1="12" y1="10" x2="12" y2="14.2"/><circle cx="12" cy="16.7" r=".2" fill="currentColor"/></svg>',
+  octagon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8l5 5v8l-5 5H8l-5-5V8Z"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16" r=".3" fill="currentColor"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><line x1="3.5" y1="9.5" x2="20.5" y2="9.5"/><line x1="8" y1="3" x2="8" y2="6.5"/><line x1="16" y1="3" x2="16" y2="6.5"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M15.5 6.5a2.7 2.7 0 0 1 0 5.3"/><path d="M15.5 14c2.6.3 4.5 2.2 4.5 5"/></svg>',
+  sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><line x1="12" y1="2.5" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="21.5"/><line x1="4" y1="12" x2="2.5" y2="12"/><line x1="21.5" y1="12" x2="20" y2="12"/><line x1="5.5" y1="5.5" x2="7" y2="7"/><line x1="17" y1="17" x2="18.5" y2="18.5"/><line x1="18.5" y1="5.5" x2="17" y2="7"/><line x1="7" y1="17" x2="5.5" y2="18.5"/></svg>',
+  cloud:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18h10.5a3.5 3.5 0 0 0 0-7 5 5 0 0 0-9.6-1.6A4 4 0 0 0 7 18Z"/></svg>',
+  rain:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 15.5h10a3.5 3.5 0 0 0 0-7 5 5 0 0 0-9.6-1.6A4 4 0 0 0 6.5 15.5Z"/><line x1="8.5" y1="19" x2="7.5" y2="21.3"/><line x1="12" y1="19" x2="11" y2="21.3"/><line x1="15.5" y1="19" x2="14.5" y2="21.3"/></svg>',
+  wind:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a2.5 2.5 0 1 0-2.2-3.7"/><path d="M3 13h14.5a2.7 2.7 0 1 1-2.3 4"/><path d="M3 18h8a2 2 0 1 1-1.8 2.9"/></svg>',
+  chevron:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
+  arrowleft:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg>',
+  photo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5.5-5.5a1.5 1.5 0 0 0-2 0L5 19"/></svg>',
+  building:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="10" height="18" rx="1"/><rect x="14" y="9" width="6" height="12" rx="1"/><line x1="7" y1="7" x2="7" y2="7.01"/><line x1="11" y1="7" x2="11" y2="7.01"/><line x1="7" y1="11" x2="7" y2="11.01"/><line x1="11" y1="11" x2="11" y2="11.01"/><line x1="7" y1="15" x2="7" y2="15.01"/><line x1="11" y1="15" x2="11" y2="15.01"/></svg>',
+  upload:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M7.5 8.5 12 4l4.5 4.5"/><path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></svg>',
+  sheet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="1.5"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="14" x2="20" y2="14"/><line x1="9.5" y1="9" x2="9.5" y2="20.5"/><line x1="14.5" y1="9" x2="14.5" y2="20.5"/></svg>',
+  spinner:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/></svg>',
+  copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="8.5" width="11.5" height="11.5" rx="1.8"/><path d="M15.5 8.5V5.8A1.8 1.8 0 0 0 13.7 4H5.8A1.8 1.8 0 0 0 4 5.8v7.9a1.8 1.8 0 0 0 1.8 1.8h2.7"/></svg>',
+};
+function ic(name,cls){return ICON[name]?ICON[name].replace('<svg ', '<svg class="'+(cls||'')+'" '):'';}
+
+/* =========================================================================
+   CONSTANTES DE DOMÍNIO
+   ========================================================================= */
+const ACT_STATUS = ['Planejada','Em andamento','Concluída','Paralisada'];
+const ACT_STATUS_COLOR = {'Planejada':'var(--cat-4)','Em andamento':'var(--cat-1)','Concluída':'var(--cat-6)','Paralisada':'var(--cat-8)'};
+const DISCIPLINAS = ['Civil','Mecânica','Elétrica','Tubulação','Instrumentação','Pintura','Segurança','Outras'];
+const SEVERIDADES = ['Baixa','Média','Alta','Crítica'];
+const SEVERITY_META = {
+  'Baixa':{color:'var(--good)', icon:'check', cls:'chip-baixa'},
+  'Média':{color:'var(--warning)', icon:'dash', cls:'chip-media'},
+  'Alta':{color:'var(--serious)', icon:'triangle', cls:'chip-alta'},
+  'Crítica':{color:'var(--critical)', icon:'octagon', cls:'chip-critica'},
+};
+const CLIMA_OPCOES = ['Bom','Nublado','Chuva fraca','Chuva forte','Vento forte'];
+const CLIMA_ICON = {'Bom':'sun','Nublado':'cloud','Chuva fraca':'rain','Chuva forte':'rain','Vento forte':'wind'};
+const SITUACAO_EQUIP = ['Operando','Parado','Manutenção'];
+const FUNCOES_COMUNS = ['Encarregado','Engenheiro','Técnico de Segurança','Soldador','Montador','Ajudante','Eletricista','Pintor','Operador de Equipamento','Almoxarife'];
+const EQUIP_COMUNS = ['Guindaste','Munck','Gerador','Compressor de ar','Plataforma elevatória','Máquina de solda','Caminhão','Retroescavadeira','Empilhadeira','Andaime'];
+const THEMES = [
+  {key:'concreto', label:'Concreto', sub:'Neutro, claro'},
+  {key:'blueprint', label:'Blueprint', sub:'Grade técnica, escuro'},
+  {key:'aco', label:'Aço', sub:'Corporativo, claro'},
+  {key:'canteiro', label:'Canteiro', sub:'Segurança, escuro'},
+  {key:'kraft', label:'Kraft', sub:'Diário de bordo'},
+];
+
+/* =========================================================================
+   ESTADO
+   ========================================================================= */
+let dbCap=null, assetsCap=null, userCap=null, downloadsCap=null;
+let claudeUser={id:null, name:'', canEdit:false, canWrite:null};
+let rdos=[];
+let usingLocalFallback=false;
+let demoMode=false;
+let currentView='painel';
+let editingId=null;
+let formState=null;
+let unsub=null;
+let filters={q:'', status:'todos', from:'', to:'', month:'todos'};
+let confirmingDeleteId=null;
+let importLog=null;
+
+const LS_THEME='rdo_theme_v2';
+const LS_DATA='rdo_local_data_v2';
+
+/* =========================================================================
+   UTILITÁRIOS
+   ========================================================================= */
+function uid(){return 'k'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function todayISO(){const d=new Date();const off=d.getTimezoneOffset();const local=new Date(d.getTime()-off*60000);return local.toISOString().slice(0,10);}
+function fmtDateLong(iso){
+  if(!iso) return '—';
+  const d=new Date(iso+'T00:00:00');
+  if(isNaN(d)) return iso;
+  const wd=d.toLocaleDateString('pt-BR',{weekday:'short'});
+  const dm=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  return dm+' · '+wd.replace('.','').replace(/^./,c=>c.toUpperCase());
+}
+function fmtMonthLabel(iso){
+  const d=new Date((iso||todayISO())+'T00:00:00');
+  return d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}).replace(/^./,c=>c.toUpperCase());
+}
+function monthKey(iso){return (iso||'').slice(0,7);}
+function toast(msg, tone){
+  const wrap=document.getElementById('toastWrap');
+  const el=document.createElement('div');
+  el.className='toast';
+  el.textContent=msg;
+  if(tone==='err') el.style.background='var(--critical)';
+  wrap.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('show'));
+  setTimeout(()=>{el.classList.remove('show'); setTimeout(()=>el.remove(),250);},2600);
+}
+function blobUrl(id){
+  if(_localBlobUrlCache[id]) return _localBlobUrlCache[id];
+  // Fotos que já vieram pré-carregadas neste pacote (não anexadas nesta sessão do
+  // navegador) ficam como arquivos estáticos em ./photos/<id>.jpg, ao lado deste HTML.
+  if(typeof id==='string' && id.indexOf('local_')!==0) return './photos/'+id+'.jpg';
+  return '/_blob/'+id;
+}
+let lightboxId=null, lightboxLegenda='';
+function openLightbox(id, legenda){
+  const box=document.getElementById('lightbox');
+  lightboxId=id; lightboxLegenda=legenda||'';
+  document.getElementById('lightboxImg').src = blobUrl(id);
+  document.getElementById('lightboxCap').textContent = legenda||'';
+  document.getElementById('lightboxToolbar').innerHTML = `
+    <button class="lb-action" onclick="copyPhotoToClipboard()">${ic('copy')} Copiar</button>
+    <button class="lb-action" onclick="downloadPhoto()">${ic('download')} Baixar</button>
+  `;
+  box.hidden=false;
+}
+function closeLightbox(){
+  document.getElementById('lightbox').hidden=true;
+  document.getElementById('lightboxImg').src='';
+  lightboxId=null; lightboxLegenda='';
+}
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ const box=document.getElementById('lightbox'); if(box && !box.hidden) closeLightbox(); }
+});
+async function fetchPhotoBlob(id){
+  const res = await fetch(blobUrl(id));
+  if(!res.ok) throw new Error('não foi possível carregar a foto');
+  return await res.blob();
+}
+function extFromMime(type){
+  return ({'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif'})[type] || 'jpg';
+}
+function slugify(s){
+  return normText(s).replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').slice(0,40) || 'foto';
+}
+async function downloadPhoto(id, legenda){
+  id = id || lightboxId; legenda = legenda!=null ? legenda : lightboxLegenda;
+  if(!id){ return; }
+  try{
+    const blob = await fetchPhotoBlob(id);
+    const filename = slugify(legenda) + '-' + id.slice(0,6) + '.' + extFromMime(blob.type);
+    if(downloadsCap){
+      try{
+        await downloadsCap.save({filename, data:blob});
+        toast('Foto baixada.');
+        return;
+      }catch(e){
+        if(e && e.code==='declined') return;
+        // segue para o fallback abaixo
+      }
+    }
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('Foto baixada.');
+  }catch(e){
+    console.warn('falha ao baixar foto', e);
+    toast('Não foi possível baixar esta foto.', 'err');
+  }
+}
+async function copyPhotoToClipboard(){
+  if(!lightboxId) return;
+  if(!navigator.clipboard || typeof ClipboardItem==='undefined'){
+    toast('Copiar não é suportado neste navegador — use Baixar.', 'err');
+    return;
+  }
+  try{
+    const blob = await fetchPhotoBlob(lightboxId);
+    const pngBlob = blob.type==='image/png' ? blob : await toPngBlob(blob);
+    await navigator.clipboard.write([new ClipboardItem({'image/png': pngBlob})]);
+    toast('Foto copiada!');
+  }catch(e){
+    console.warn('falha ao copiar foto', e);
+    toast('Não foi possível copiar esta foto — tente Baixar.', 'err');
+  }
+}
+function toPngBlob(blob){
+  return new Promise((resolve, reject)=>{
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = ()=>{
+      try{
+        const canvas=document.createElement('canvas');
+        canvas.width=img.naturalWidth; canvas.height=img.naturalHeight;
+        canvas.getContext('2d').drawImage(img,0,0);
+        canvas.toBlob(b=>{ URL.revokeObjectURL(url); b?resolve(b):reject(new Error('falha ao converter imagem')); }, 'image/png');
+      }catch(e){ URL.revokeObjectURL(url); reject(e); }
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error('falha ao carregar imagem')); };
+    img.src = url;
+  });
+}
+
+/* =========================================================================
+   CONVERSÃO AUTOMÁTICA DE FOTOS EM FORMATO INCOMPATÍVEL
+   (HEIC/HEIF de iPhone, TIFF, BMP e afins) para PNG/JPEG antes de anexar,
+   tanto no upload manual quanto na importação de fotos da planilha.
+   ========================================================================= */
+const COMPATIBLE_PHOTO_MIMES = new Set(['image/png','image/jpeg','image/webp','image/gif']);
+const _libLoadCache = {};
+function loadScriptOnce(url, checkGlobal){
+  if(_libLoadCache[url]) return _libLoadCache[url];
+  _libLoadCache[url] = new Promise((resolve,reject)=>{
+    if(checkGlobal()) return resolve();
+    const s=document.createElement('script');
+    s.src=url;
+    s.onload=()=>checkGlobal()?resolve():reject(new Error('biblioteca carregada, mas indisponível'));
+    s.onerror=()=>reject(new Error('falha ao carregar biblioteca de conversão de imagem'));
+    document.head.appendChild(s);
+  });
+  return _libLoadCache[url];
+}
+function extOfName(name){ return (String(name||'').split('.').pop()||'').toLowerCase(); }
+async function decodeTiffToCanvas(buf){
+  await loadScriptOnce('https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.js', ()=>typeof UTIF!=='undefined');
+  const ifds = UTIF.decode(buf);
+  UTIF.decodeImage(buf, ifds[0]);
+  const rgba = UTIF.toRGBA8(ifds[0]);
+  const canvas=document.createElement('canvas');
+  canvas.width=ifds[0].width; canvas.height=ifds[0].height;
+  const ctx=canvas.getContext('2d');
+  const imgData=ctx.createImageData(canvas.width, canvas.height);
+  imgData.data.set(rgba);
+  ctx.putImageData(imgData,0,0);
+  return canvas;
+}
+async function decodeHeicToJpegBlob(blob){
+  await loadScriptOnce('https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js', ()=>typeof heic2any!=='undefined');
+  const out = await heic2any({blob, toType:'image/jpeg', quality:0.9});
+  return Array.isArray(out) ? out[0] : out;
+}
+// Recebe um File/Blob de foto em qualquer formato e devolve sempre algo
+// compatível (PNG/JPEG) para anexar ao RDO. Se já for compatível, devolve
+// o próprio arquivo sem reprocessar. Lança erro só nos poucos casos que
+// nenhum método consegue decodificar (ex.: EMF/WMF, arquivo corrompido).
+async function ensureCompatiblePhoto(file){
+  const mime=(file.type||'').toLowerCase();
+  const ext=extOfName(file.name||'');
+  if(COMPATIBLE_PHOTO_MIMES.has(mime)) return {blob:file, mime, converted:false};
+  // 1ª tentativa: deixa o próprio navegador decodificar (cobre BMP e outros
+  // formatos que o Chrome/Firefox/Safari já sabem exibir nativamente).
+  try{
+    const pngBlob = await toPngBlob(file);
+    return {blob:pngBlob, mime:'image/png', converted:true, via:'nativo'};
+  }catch(e){ /* segue para os conversores específicos abaixo */ }
+  const isHeic = mime.includes('heic') || mime.includes('heif') || ext==='heic' || ext==='heif';
+  const isTiff = mime.includes('tiff') || ext==='tif' || ext==='tiff';
+  if(isHeic){
+    const jpegBlob = await decodeHeicToJpegBlob(file);
+    return {blob:jpegBlob, mime:'image/jpeg', converted:true, via:'heic'};
+  }
+  if(isTiff){
+    const buf = await file.arrayBuffer();
+    const canvas = await decodeTiffToCanvas(buf);
+    const pngBlob = await new Promise((res,rej)=>canvas.toBlob(b=>b?res(b):rej(new Error('falha ao converter TIFF')),'image/png'));
+    return {blob:pngBlob, mime:'image/png', converted:true, via:'tiff'};
+  }
+  throw new Error('Formato de imagem não suportado ('+(ext||mime||'desconhecido')+').');
+}
+
+/* =========================================================================
+   ARMAZENAMENTO LOCAL DE FOTOS (IndexedDB)
+   Usado quando o painel roda como arquivo HTML autônomo, fora do ambiente
+   de artifacts (sem window.claude) — assim o anexo de fotos continua
+   funcionando 100% no navegador, sem precisar de servidor.
+   ========================================================================= */
+const LOCAL_PHOTO_DB='rdo_photos_v1', LOCAL_PHOTO_STORE='photos';
+let _localPhotoDbPromise=null;
+function openLocalPhotoDb(){
+  if(_localPhotoDbPromise) return _localPhotoDbPromise;
+  _localPhotoDbPromise = new Promise((resolve,reject)=>{
+    if(!('indexedDB' in window)){ reject(new Error('IndexedDB indisponível neste navegador')); return; }
+    const req = indexedDB.open(LOCAL_PHOTO_DB, 1);
+    req.onupgradeneeded = ()=>{ req.result.createObjectStore(LOCAL_PHOTO_STORE, {keyPath:'id'}); };
+    req.onsuccess = ()=>resolve(req.result);
+    req.onerror = ()=>reject(req.error||new Error('falha ao abrir IndexedDB'));
+  });
+  return _localPhotoDbPromise;
+}
+function idbPut(record){
+  return openLocalPhotoDb().then(db=>new Promise((resolve,reject)=>{
+    const tx=db.transaction(LOCAL_PHOTO_STORE,'readwrite');
+    tx.objectStore(LOCAL_PHOTO_STORE).put(record);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  }));
+}
+function idbGet(id){
+  return openLocalPhotoDb().then(db=>new Promise((resolve,reject)=>{
+    const tx=db.transaction(LOCAL_PHOTO_STORE,'readonly');
+    const req=tx.objectStore(LOCAL_PHOTO_STORE).get(id);
+    req.onsuccess=()=>resolve(req.result||null);
+    req.onerror=()=>reject(req.error);
+  }));
+}
+function idbDelete(id){
+  return openLocalPhotoDb().then(db=>new Promise((resolve,reject)=>{
+    const tx=db.transaction(LOCAL_PHOTO_STORE,'readwrite');
+    tx.objectStore(LOCAL_PHOTO_STORE).delete(id);
+    tx.oncomplete=()=>resolve();
+    tx.onerror=()=>reject(tx.error);
+  }));
+}
+function idbGetAll(){
+  return openLocalPhotoDb().then(db=>new Promise((resolve,reject)=>{
+    const tx=db.transaction(LOCAL_PHOTO_STORE,'readonly');
+    const req=tx.objectStore(LOCAL_PHOTO_STORE).getAll();
+    req.onsuccess=()=>resolve(req.result||[]);
+    req.onerror=()=>reject(req.error);
+  }));
+}
+const _localBlobUrlCache={};
+function cacheLocalBlobUrl(id, blob){
+  try{
+    if(_localBlobUrlCache[id]) URL.revokeObjectURL(_localBlobUrlCache[id]);
+    _localBlobUrlCache[id] = URL.createObjectURL(blob);
+  }catch(e){}
+}
+const localAssetsCap = {
+  async upload(blob, opts){
+    const id = 'local_'+uid();
+    const type = (opts&&opts.type) || blob.type || 'application/octet-stream';
+    await idbPut({id, blob, type, size:blob.size||0, createdAt:Date.now()});
+    cacheLocalBlobUrl(id, blob);
+    return {id, url:'#local:'+id, sizeBytes:blob.size||0, contentType:type};
+  },
+  async delete(id){
+    await idbDelete(id);
+    if(_localBlobUrlCache[id]){ try{URL.revokeObjectURL(_localBlobUrlCache[id]);}catch(e){} delete _localBlobUrlCache[id]; }
+    return {deleted:true};
+  },
+  async list(){
+    const all = await idbGetAll();
+    const bytes = all.reduce((s,r)=>s+(r.size||0),0);
+    return { assets: all.map(r=>({id:r.id, sizeBytes:r.size, contentType:r.type})), usage:{files:all.length, bytes, maxFiles:5000, maxBytes:500*1024*1024} };
+  },
+};
+// Depois de carregar os RDOs salvos (localStorage), busca no IndexedDB o
+// blob de cada foto referenciada e prepara a URL local usada por blobUrl().
+async function hydrateLocalPhotoUrls(rdoList){
+  const ids=new Set();
+  (rdoList||[]).forEach(r=>(r.atividades||[]).forEach(a=>(a.fotos||[]).forEach(p=>{ if(p && p.id) ids.add(p.id); })));
+  if(!ids.size) return;
+  try{
+    await Promise.all(Array.from(ids).map(async id=>{
+      if(_localBlobUrlCache[id]) return;
+      const rec = await idbGet(id);
+      if(rec && rec.blob) cacheLocalBlobUrl(id, rec.blob);
+    }));
+  }catch(e){ console.warn('falha ao carregar fotos locais salvas', e); }
+}
+
+/* =========================================================================
+   INICIALIZAÇÃO / CAPACIDADES
+   ========================================================================= */
+function initTheme(){
+  let saved=null;
+  try{saved=localStorage.getItem(LS_THEME);}catch(e){}
+  if(!saved){
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    saved = prefersDark ? 'canteiro' : 'concreto';
+  }
+  applyTheme(saved, true);
+}
+function applyTheme(key, silent){
+  document.documentElement.setAttribute('data-bg', key);
+  try{localStorage.setItem(LS_THEME, key);}catch(e){}
+  const btn=document.getElementById('themeBtn');
+  if(btn) btn.innerHTML = ic('palette');
+  renderThemePopover();
+  if(!silent) toast('Fundo alterado para "'+(THEMES.find(t=>t.key===key)||{}).label+'"');
+}
+function toggleThemePopover(){
+  const pop=document.getElementById('themePopover');
+  pop.hidden = !pop.hidden;
+  if(!pop.hidden) renderThemePopover();
+}
+function renderThemePopover(){
+  const pop=document.getElementById('themePopover');
+  const current=document.documentElement.getAttribute('data-bg');
+  pop.innerHTML = '<h4>Fundo do painel</h4><div class="swatch-grid">'+
+    THEMES.map(t=>(
+      '<button class="swatch" aria-pressed="'+(t.key===current)+'" onclick="applyTheme(\''+t.key+'\')">'+
+        '<div class="chip chip-'+t.key+'"></div>'+
+        '<div class="lbl">'+t.label+'</div>'+
+        '<div class="sub">'+t.sub+'</div>'+
+      '</button>'
+    )).join('')+
+  '</div>';
+}
+document.addEventListener('click', (e)=>{
+  const wrap=document.querySelector('.popover-wrap');
+  if(wrap && !wrap.contains(e.target)){
+    const pop=document.getElementById('themePopover');
+    if(pop) pop.hidden=true;
+  }
+});
+
+function updateModePill(){
+  const pill=document.getElementById('modePill');
+  if(usingLocalFallback){
+    pill.className='mode-pill local';
+    pill.innerHTML = ic('list')+' Local (este navegador)';
+  } else {
+    pill.className='mode-pill';
+    pill.innerHTML = ic('check')+' Sincronizado';
+  }
+}
+
+async function boot(){
+  document.querySelector('[data-view="painel"]').innerHTML = ic('grid')+'<span class="tab-label">Painel</span>';
+  document.querySelector('[data-view="diario"]').innerHTML = ic('list')+'<span class="tab-label">Diário de Obra</span>';
+  initTheme();
+
+  if(window.claude && typeof window.claude.use === 'function'){
+    try{
+      const [db, assets, user, downloads] = await Promise.all([
+        window.claude.use('db').catch(()=>null),
+        window.claude.use('assets').catch(()=>null),
+        window.claude.use('user').catch(()=>null),
+        window.claude.use('downloads').catch(()=>null),
+      ]);
+      dbCap=db; assetsCap=assets; userCap=user; downloadsCap=downloads;
+    }catch(e){ /* segue sem capacidades */ }
+  }
+
+  if(userCap){
+    try{
+      const [me, canWrite, canEdit] = await Promise.all([
+        userCap.me(), userCap.can('data.write'), userCap.canEdit()
+      ]);
+      claudeUser = {id: me.id, name: me.name||'', canEdit: !!canEdit, canWrite: canWrite};
+    }catch(e){}
+  }
+
+  if(dbCap){
+    try{
+      const q = dbCap.collection('rdos').orderBy('data','desc').limit(300);
+      unsub = q.onSnapshot(snap=>{
+        rdos = snap.docs.map(d=>Object.assign({id:d.id}, d.data()));
+        demoMode = rdos.length===0;
+        usingLocalFallback=false;
+        updateModePill();
+        renderCurrentView();
+      }, err=>{
+        console.warn('db onSnapshot error', err);
+        fallbackLocal();
+      });
+    }catch(e){ fallbackLocal(); }
+  } else {
+    fallbackLocal();
+  }
+
+  updateModePill();
+  renderCurrentView();
+}
+function fallbackLocal(){
+  usingLocalFallback=true;
+  if(!assetsCap) assetsCap = localAssetsCap;
+  let raw=null;
+  try{ raw = localStorage.getItem(LS_DATA); }catch(e){ raw=null; }
+  if(raw==null && window.__RDO_SEED__ && Array.isArray(window.__RDO_SEED__) && window.__RDO_SEED__.length){
+    // Primeira vez que este arquivo é aberto neste navegador (ainda não há nada
+    // salvo em localStorage): carrega os RDOs que já vieram pré-preenchidos
+    // junto com este pacote. Depois disso, o que estiver em localStorage manda.
+    rdos = window.__RDO_SEED__.slice();
+    persistLocal();
+    setTimeout(()=>toast(rdos.length+' RDO(s) pré-carregado(s) neste painel.'), 300);
+  } else {
+    try{ rdos = JSON.parse(raw||'[]'); }catch(e){ rdos=[]; }
+  }
+  rdos.sort((a,b)=> (b.data||'').localeCompare(a.data||''));
+  demoMode = rdos.length===0;
+  updateModePill();
+  renderCurrentView();
+  // busca as fotos já salvas no IndexedDB e re-renderiza quando estiverem prontas
+  hydrateLocalPhotoUrls(rdos).then(()=>{ if(usingLocalFallback) renderCurrentView(); });
+}
+function persistLocal(){
+  try{ localStorage.setItem(LS_DATA, JSON.stringify(rdos)); }catch(e){}
+}
+
+/* =========================================================================
+   DADOS DE EXEMPLO (somente exibição enquanto não há registros reais)
+   ========================================================================= */
+function demoData(){
+  const d0=todayISO();
+  const d1=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  const d2=new Date(Date.now()-2*86400000).toISOString().slice(0,10);
+  return [
+    {id:'demo-1', numero:48, obra:'Ampliação Linha 2 — Planta Industrial', cliente:'Cliente Exemplo S.A.', contrato:'CT-2026-014', data:d0, responsavel:'Eng. Responsável', status:'emitido',
+      clima:{manha:'Bom', tarde:'Nublado', noite:'Bom', chuvaHoras:0, impacto:false},
+      efetivo:[{funcao:'Encarregado',qtd:1},{funcao:'Soldador',qtd:4},{funcao:'Montador',qtd:6},{funcao:'Ajudante',qtd:5}],
+      equipamentos:[{nome:'Guindaste',qtd:1,situacao:'Operando',horas:8},{nome:'Máquina de solda',qtd:4,situacao:'Operando',horas:7}],
+      atividades:[
+        {id:'a1',descricao:'Montagem de estrutura metálica do mezanino — módulo B',local:'Área 12',disciplina:'Mecânica',percentual:65,status:'Em andamento',fotos:[]},
+        {id:'a2',descricao:'Solda de tubulação de processo, trecho 4',local:'Área 09',disciplina:'Tubulação',percentual:100,status:'Concluída',fotos:[]},
+      ],
+      ocorrencias:[{descricao:'Falta pontual de eletrodo de solda — reposto no almoxarifado às 10h',gravidade:'Baixa'}],
+      observacoes:'Exemplo — RDO ilustrativo para demonstrar o layout do painel.'},
+    {id:'demo-2', numero:47, obra:'Ampliação Linha 2 — Planta Industrial', cliente:'Cliente Exemplo S.A.', contrato:'CT-2026-014', data:d1, responsavel:'Eng. Responsável', status:'emitido',
+      clima:{manha:'Chuva forte', tarde:'Chuva fraca', noite:'Bom', chuvaHoras:3, impacto:true},
+      efetivo:[{funcao:'Encarregado',qtd:1},{funcao:'Montador',qtd:6},{funcao:'Eletricista',qtd:2}],
+      equipamentos:[{nome:'Plataforma elevatória',qtd:2,situacao:'Parado',horas:0}],
+      atividades:[{id:'a3',descricao:'Lançamento de cabeamento elétrico — painel MCC-03',local:'Sala elétrica',disciplina:'Elétrica',percentual:30,status:'Paralisada',fotos:[]}],
+      ocorrencias:[{descricao:'Chuva forte no período da manhã paralisou serviços externos',gravidade:'Alta'}],
+      observacoes:'Exemplo — dia com perda parcial por chuva.'},
+    {id:'demo-3', numero:46, obra:'Ampliação Linha 2 — Planta Industrial', cliente:'Cliente Exemplo S.A.', contrato:'CT-2026-014', data:d2, responsavel:'Eng. Responsável', status:'emitido',
+      clima:{manha:'Bom', tarde:'Bom', noite:'Bom', chuvaHoras:0, impacto:false},
+      efetivo:[{funcao:'Encarregado',qtd:1},{funcao:'Ajudante',qtd:8},{funcao:'Pintor',qtd:2}],
+      equipamentos:[{nome:'Compressor de ar',qtd:1,situacao:'Operando',horas:6}],
+      atividades:[{id:'a4',descricao:'Pintura de proteção anticorrosiva — estrutura secundária',local:'Área 12',disciplina:'Pintura',percentual:100,status:'Concluída',fotos:[]}],
+      ocorrencias:[],
+      observacoes:'Exemplo — dia sem ocorrências.'},
+  ];
+}
+
+/* =========================================================================
+   NAVEGAÇÃO
+   ========================================================================= */
+function setView(v){
+  currentView=v;
+  document.getElementById('view-painel').hidden = v!=='painel';
+  document.getElementById('view-diario').hidden = v!=='diario';
+  document.getElementById('view-form').hidden = v!=='form';
+  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected', String(t.dataset.view===v)));
+  if(v==='painel') renderPainel();
+  if(v==='diario') renderDiario();
+  window.scrollTo({top:0, behavior:'auto'});
+}
+function renderCurrentView(){
+  if(currentView==='painel') renderPainel();
+  else if(currentView==='diario') renderDiario();
+  // view 'form' não é re-renderizada automaticamente por atualizações da lista
+}
+
+/* =========================================================================
+   PAINEL (DASHBOARD)
+   ========================================================================= */
+function activeDataset(){ return demoMode ? demoData() : rdos; }
+
+function renderPainel(){
+  const el=document.getElementById('view-painel');
+  const data=activeDataset();
+  const mKey=monthKey(todayISO());
+  const monthDocs = data.filter(r=>monthKey(r.data)===mKey);
+
+  const emitidos = monthDocs.filter(r=>r.status==='emitido').length;
+  const efetivoTotal = monthDocs.map(r=>(r.efetivo||[]).reduce((s,x)=>s+(Number(x.qtd)||0),0));
+  const efetivoMedio = efetivoTotal.length? Math.round(efetivoTotal.reduce((a,b)=>a+b,0)/efetivoTotal.length) : 0;
+  const chuvaHoras = monthDocs.reduce((s,r)=>s+(Number(r.clima&&r.clima.chuvaHoras)||0),0);
+  let ocorrCriticas=[];
+  monthDocs.forEach(r=>(r.ocorrencias||[]).forEach(o=>{ if(o.gravidade==='Alta'||o.gravidade==='Crítica') ocorrCriticas.push({rdo:r, occ:o}); }));
+
+  const todayDoc = data.find(r=>r.data===todayISO());
+  const atividadesAndamentoHoje = todayDoc ? (todayDoc.atividades||[]).filter(a=>a.status==='Em andamento').length : 0;
+
+  const statusCounts = ACT_STATUS.map(s=>({
+    label:s, value: monthDocs.reduce((sum,r)=>sum+(r.atividades||[]).filter(a=>a.status===s).length,0),
+    color: ACT_STATUS_COLOR[s]
+  }));
+
+  const days=[];
+  for(let i=13;i>=0;i--){
+    const d=new Date(Date.now()-i*86400000);
+    const iso=d.toISOString().slice(0,10);
+    days.push({label:d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}), value: data.filter(r=>r.data===iso).length});
+  }
+
+  const weatherDays=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(Date.now()-i*86400000);
+    const iso=d.toISOString().slice(0,10);
+    const doc=data.find(r=>r.data===iso);
+    const clima = doc && doc.clima && doc.clima.tarde || (doc && doc.clima && doc.clima.manha) || null;
+    weatherDays.push({label:d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','').slice(0,3), clima});
+  }
+
+  el.innerHTML = `
+    ${demoMode ? `<div class="banner info">${ic('building')}<div><div class="b-title">Nenhum RDO registrado ainda <span class="demo-badge">Exemplo</span></div><div class="b-body">Os cartões e gráficos abaixo mostram dados ilustrativos. Crie o primeiro RDO real para substituí-los.</div></div></div>` : ''}
+    ${ocorrCriticas.length ? `
+      <div class="banner crit">${ic('octagon')}
+        <div>
+          <div class="b-title">${ocorrCriticas.length} ocorrência${ocorrCriticas.length>1?'s':''} de atenção neste mês</div>
+          <ul>${ocorrCriticas.slice(0,4).map(x=>`<li><strong>${esc(fmtDateLong(x.rdo.data))}</strong> — ${esc(x.occ.descricao)}</li>`).join('')}</ul>
+        </div>
+      </div>` : ''}
+
+    <div class="painel-head">
+      <div>
+        <h2>Painel de acompanhamento</h2>
+        <p class="section-sub">${esc(fmtMonthLabel(todayISO()))} · ${esc((data[0]&&data[0].obra) || 'Nenhuma obra registrada')}</p>
+      </div>
+      <button class="btn btn-primary" onclick="openForm(null)">${ic('plus')} Novo RDO</button>
+    </div>
+
+    <div class="stat-grid">
+      <div class="card stat"><span class="s-label">${ic('cal')} RDOs emitidos no mês</span><span class="s-value tabular">${emitidos}</span><span class="s-sub">de ${monthDocs.length} registrados</span></div>
+      <div class="card stat"><span class="s-label">${ic('users')} Efetivo médio/dia</span><span class="s-value tabular">${efetivoMedio}</span><span class="s-sub">colaboradores por RDO</span></div>
+      <div class="card stat"><span class="s-label">${ic('rain')} Chuva perdida no mês</span><span class="s-value tabular ${chuvaHoras>8?'warn':''}">${chuvaHoras}h</span><span class="s-sub">horas com impacto no cronograma</span></div>
+      <div class="card stat"><span class="s-label">${ic('octagon')} Ocorrências (alta/crítica)</span><span class="s-value tabular ${ocorrCriticas.length?'crit':''}">${ocorrCriticas.length}</span><span class="s-sub">no mês corrente</span></div>
+    </div>
+
+    <div class="chart-row">
+      <div class="card chart-card">
+        <div class="cc-head"><h3>RDOs emitidos — últimos 14 dias</h3><span>1 esperado por dia</span></div>
+        <div id="chartDays"></div>
+      </div>
+      <div class="card chart-card">
+        <div class="cc-head"><h3>Atividades por status</h3><span>mês corrente</span></div>
+        <div id="chartStatus"></div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:14px 16px;margin-bottom:18px;">
+      <div class="cc-head" style="margin-bottom:2px;"><h3>Clima — últimos 7 dias</h3><span>período da tarde</span></div>
+      <div class="weather-strip">
+        ${weatherDays.map(w=>`<div class="w-day">${ic(w.clima?CLIMA_ICON[w.clima]:'dash')}<span class="wd-label">${esc(w.label)}</span></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="card" style="padding:4px 0 12px;">
+      <div style="padding:14px 16px 4px;display:flex;justify-content:space-between;align-items:baseline;">
+        <h3 class="section-title">${ic('list')} Últimos RDOs</h3>
+        <button class="btn btn-ghost btn-sm" onclick="setView('diario')">Ver todos ${ic('chevron')}</button>
+      </div>
+      <div class="rdo-list" style="padding:6px 16px 8px;">
+        ${data.slice(0,4).map(rdoCardHtml).join('') || `<div class="empty">Nenhum RDO ainda.</div>`}
+      </div>
+    </div>
+  `;
+
+  drawBarChart(document.getElementById('chartDays'), days.map(d=>({label:d.label, value:d.value, color:'var(--accent)'})), {suffix:' RDO(s)'});
+  drawBarChart(document.getElementById('chartStatus'), statusCounts, {suffix:' atividade(s)'});
+  bindCardClicks(el);
+}
+
+/* ---- gráfico de barras leve, sem dependências, com tooltip ---- */
+function drawBarChart(container, items, opts){
+  opts=opts||{};
+  const w=560, h=170, padL=8, padR=8, padT=18, padB=26;
+  const max=Math.max(1, ...items.map(i=>i.value));
+  const bw = (w-padL-padR)/items.length;
+  const barW = Math.min(34, bw*0.62);
+
+  let bars='';
+  items.forEach((it,i)=>{
+    const x = padL + i*bw + (bw-barW)/2;
+    const bh = Math.max(2, (it.value/max)*(h-padT-padB));
+    const y = h-padB-bh;
+    bars += `<rect class="bar-rect" tabindex="0" role="img" aria-label="${esc(it.label)}: ${it.value}"
+      x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${bh.toFixed(1)}" rx="4"
+      fill="${it.color}" data-label="${esc(it.label)}" data-value="${it.value}"></rect>`;
+    bars += `<text class="bar-label" x="${(x+barW/2).toFixed(1)}" y="${(y-5).toFixed(1)}">${it.value}</text>`;
+    bars += `<text class="axis-label" x="${(x+barW/2).toFixed(1)}" y="${h-8}">${esc(it.label)}</text>`;
+  });
+  const grid = [0.5].map(f=>`<line class="gridline" x1="${padL}" x2="${w-padR}" y1="${(h-padB-(h-padT-padB)*f).toFixed(1)}" y2="${(h-padB-(h-padT-padB)*f).toFixed(1)}" stroke-dasharray="2 3"/>`).join('');
+
+  container.style.position='relative';
+  container.innerHTML = `<svg class="chart-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${grid}<line class="gridline" x1="${padL}" x2="${w-padR}" y1="${h-padB}" y2="${h-padB}"/>${bars}</svg><div class="viz-tooltip"></div>`;
+
+  const tip=container.querySelector('.viz-tooltip');
+  container.querySelectorAll('.bar-rect').forEach(rect=>{
+    const show=(ev)=>{
+      const box=container.getBoundingClientRect();
+      const rbox=rect.getBoundingClientRect();
+      tip.textContent = rect.dataset.label+': '+rect.dataset.value+(opts.suffix||'');
+      tip.style.left = (rbox.left - box.left + rbox.width/2)+'px';
+      tip.style.top = (rbox.top - box.top)+'px';
+      tip.classList.add('show');
+    };
+    const hide=()=>tip.classList.remove('show');
+    rect.addEventListener('mouseenter', show);
+    rect.addEventListener('mousemove', show);
+    rect.addEventListener('mouseleave', hide);
+    rect.addEventListener('focus', show);
+    rect.addEventListener('blur', hide);
+  });
+}
+
+/* =========================================================================
+   DIÁRIO (LISTA)
+   ========================================================================= */
+function severityChip(g){
+  const m=SEVERITY_META[g]||SEVERITY_META['Baixa'];
+  return `<span class="severity-chip ${m.cls}">${ic(m.icon)}${esc(g)}</span>`;
+}
+function statusChip(s){
+  return s==='emitido' ? `<span class="status-chip chip-emitido">${ic('check')}Emitido</span>` : `<span class="status-chip chip-rascunho">${ic('pencil')}Rascunho</span>`;
+}
+function rdoCardHtml(r){
+  const worstOcc = (r.ocorrencias||[]).slice().sort((a,b)=>SEVERIDADES.indexOf(b.gravidade)-SEVERIDADES.indexOf(a.gravidade))[0];
+  const nPhotos = (r.atividades||[]).reduce((s,a)=>s+((a.fotos||[]).length),0);
+  const isDemo = String(r.id).startsWith('demo-');
+  return `
+  <div class="card rdo-card" data-id="${esc(r.id)}" data-action="open-rdo">
+    <div class="rc-top">
+      <div>
+        <div class="rc-id">RDO Nº ${String(r.numero||'—').padStart(3,'0')} ${isDemo?'<span class="demo-badge">Exemplo</span>':''}</div>
+        <div class="rc-title">${esc(r.obra)||'(obra não informada)'}</div>
+        <div class="rc-meta">
+          <span>${ic('cal')}${esc(fmtDateLong(r.data))}</span>
+          <span>${ic('users')}${(r.efetivo||[]).reduce((s,x)=>s+(Number(x.qtd)||0),0)} colaboradores</span>
+          <span>${ic('photo')}${nPhotos} foto(s)</span>
+          ${r.responsavel?`<span>${esc(r.responsavel)}</span>`:''}
+        </div>
+      </div>
+      <div class="rc-right">
+        ${statusChip(r.status)}
+        ${worstOcc?severityChip(worstOcc.gravidade):''}
+      </div>
+    </div>
+    <div class="rc-actions" onclick="event.stopPropagation()">
+      <button class="btn btn-sm" data-action="edit-rdo" data-id="${esc(r.id)}">${ic('pencil')}Editar</button>
+      <button class="btn btn-sm" data-action="export-rdo" data-id="${esc(r.id)}">${ic('download')}Exportar</button>
+      ${!isDemo?`<button class="btn btn-sm btn-danger" data-action="ask-delete" data-id="${esc(r.id)}">${ic('trash')}Excluir</button>`:''}
+    </div>
+    ${confirmingDeleteId===r.id ? `
+      <div class="confirm-bar">${ic('triangle')}<strong>Excluir este RDO? Esta ação não pode ser desfeita.</strong>
+        <button class="btn btn-sm" data-action="cancel-delete">Cancelar</button>
+        <button class="btn btn-sm btn-danger" data-action="confirm-delete" data-id="${esc(r.id)}">Excluir</button>
+      </div>` : ''}
+  </div>`;
+}
+
+function availableMonths(){
+  const counts={};
+  activeDataset().forEach(r=>{ const k=monthKey(r.data); if(k){ counts[k]=(counts[k]||0)+1; } });
+  return Object.keys(counts).sort((a,b)=>b.localeCompare(a)).map(k=>({key:k, count:counts[k]}));
+}
+function renderMonthTabs(){
+  const wrap=document.getElementById('monthTabsArea');
+  if(!wrap) return;
+  const months=availableMonths();
+  const total=activeDataset().length;
+  if(!months.length){ wrap.innerHTML=''; return; }
+  wrap.innerHTML = `
+    <button class="month-tab" aria-selected="${filters.month==='todos'}" data-month="todos">Todos<span class="mt-count">${total}</span></button>
+    ${months.map(m=>`<button class="month-tab" aria-selected="${filters.month===m.key}" data-month="${m.key}">${esc(fmtMonthLabel(m.key+'-01'))}<span class="mt-count">${m.count}</span></button>`).join('')}
+  `;
+  wrap.querySelectorAll('.month-tab').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      filters.month = btn.dataset.month;
+      renderMonthTabs();
+      renderRdoList();
+    });
+  });
+}
+function renderDiario(){
+  const el=document.getElementById('view-diario');
+  el.innerHTML = `
+    <div class="form-header">
+      <div>
+        <h2>Diário de Obra</h2>
+        <p class="section-sub">Histórico completo de RDOs emitidos</p>
+      </div>
+      <button class="btn btn-primary" onclick="openForm(null)">${ic('plus')} Novo RDO</button>
+    </div>
+    <div class="month-tabs" id="monthTabsArea"></div>
+    <div class="filter-bar">
+      <div class="grow"><input class="input" id="fq" placeholder="Buscar por obra, responsável ou número..." value="${esc(filters.q)}"></div>
+      <select class="select" id="fstatus" style="width:150px;">
+        <option value="todos">Todos os status</option>
+        <option value="emitido">Emitido</option>
+        <option value="rascunho">Rascunho</option>
+      </select>
+      <input class="input" type="date" id="ffrom" style="width:150px;" value="${esc(filters.from)}">
+      <input class="input" type="date" id="fto" style="width:150px;" value="${esc(filters.to)}">
+    </div>
+    <div class="rdo-list" id="rdoListArea"></div>
+  `;
+  document.getElementById('fstatus').value = filters.status;
+  document.getElementById('fq').addEventListener('input', e=>{filters.q=e.target.value; renderRdoList();});
+  document.getElementById('fstatus').addEventListener('change', e=>{filters.status=e.target.value; renderRdoList();});
+  document.getElementById('ffrom').addEventListener('change', e=>{filters.from=e.target.value; renderRdoList();});
+  document.getElementById('fto').addEventListener('change', e=>{filters.to=e.target.value; renderRdoList();});
+  renderMonthTabs();
+  renderRdoList();
+}
+function renderRdoList(){
+  const area=document.getElementById('rdoListArea');
+  let data=activeDataset().slice();
+  if(filters.month && filters.month!=='todos') data=data.filter(r=>monthKey(r.data)===filters.month);
+  if(filters.q){
+    const q=filters.q.toLowerCase();
+    data=data.filter(r=> (r.obra||'').toLowerCase().includes(q) || (r.responsavel||'').toLowerCase().includes(q) || String(r.numero||'').includes(q) || (r.cliente||'').toLowerCase().includes(q));
+  }
+  if(filters.status!=='todos') data=data.filter(r=>r.status===filters.status);
+  if(filters.from) data=data.filter(r=>r.data>=filters.from);
+  if(filters.to) data=data.filter(r=>r.data<=filters.to);
+  data.sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+
+  area.innerHTML = data.length ? data.map(rdoCardHtml).join('') : `
+    <div class="empty card">${ic('building')}<div class="e-title">Nenhum RDO encontrado</div><p>Ajuste os filtros ou crie um novo registro.</p></div>`;
+  bindCardClicks(area);
+}
+
+function bindCardClicks(root){
+  root.querySelectorAll('[data-action]').forEach(elm=>{
+    elm.addEventListener('click', (ev)=>{
+      const action=elm.dataset.action, id=elm.dataset.id;
+      if(action==='open-rdo'){ openDetail(id); }
+      if(action==='edit-rdo'){ ev.stopPropagation(); openForm(id); }
+      if(action==='export-rdo'){ ev.stopPropagation(); exportRdo(id); }
+      if(action==='ask-delete'){ ev.stopPropagation(); confirmingDeleteId=id; renderCurrentView(); }
+      if(action==='cancel-delete'){ ev.stopPropagation(); confirmingDeleteId=null; renderCurrentView(); }
+      if(action==='confirm-delete'){ ev.stopPropagation(); doDelete(id); }
+    });
+  });
+}
+
+function findRdo(id){ return activeDataset().find(r=>r.id===id); }
+
+/* =========================================================================
+   DETALHE (somente leitura)
+   ========================================================================= */
+function openDetail(id){
+  const r=findRdo(id);
+  if(!r) return;
+  const el=document.getElementById('view-form');
+  const totalEfetivo=(r.efetivo||[]).reduce((s,x)=>s+(Number(x.qtd)||0),0);
+  el.innerHTML = `
+    <div class="form-header">
+      <button class="btn btn-ghost" onclick="setView('diario')">${ic('arrowleft')} Voltar</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="exportRdo('${esc(id)}')">${ic('download')} Exportar</button>
+        <button class="btn btn-primary" onclick="openForm('${esc(id)}')">${ic('pencil')} Editar</button>
+      </div>
+    </div>
+    <div class="card" style="padding:18px 20px;">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:flex-start;">
+        <div>
+          <div class="rc-id">RDO Nº ${String(r.numero||'—').padStart(3,'0')}</div>
+          <h2 style="margin-top:2px;">${esc(r.obra)}</h2>
+          <p class="section-sub">${esc(r.cliente||'')} ${r.contrato?'· Contrato '+esc(r.contrato):''}</p>
+        </div>
+        ${statusChip(r.status)}
+      </div>
+
+      <div class="detail-grid" style="margin-top:16px;">
+        <div class="card detail-item"><div class="di-label">Data</div><div class="di-value">${esc(fmtDateLong(r.data))}</div></div>
+        <div class="card detail-item"><div class="di-label">Contratada</div><div class="di-value">${esc(r.contratada)||'—'}</div></div>
+        <div class="card detail-item"><div class="di-label">Responsável técnico</div><div class="di-value">${esc(r.responsavel)||'—'}</div></div>
+        <div class="card detail-item"><div class="di-label">Clima (manhã / tarde / noite)</div><div class="di-value">${ic(CLIMA_ICON[r.clima&&r.clima.manha]||'dash','')} ${esc(r.clima&&r.clima.manha)} — ${esc(r.clima&&r.clima.tarde)} — ${esc(r.clima&&r.clima.noite)}</div></div>
+        <div class="card detail-item"><div class="di-label">Impacto de chuva</div><div class="di-value">${(r.clima&&r.clima.chuvaHoras)||0}h ${r.clima&&r.clima.impacto?'· Impactou o cronograma':''}</div></div>
+      </div>
+
+      <h3 class="section-title" style="margin-top:8px;">${ic('users')} Efetivo (${totalEfetivo})</h3>
+      <table class="detail-table"><thead><tr><th>Função</th><th>Qtd.</th></tr></thead>
+        <tbody>${(r.efetivo||[]).map(x=>`<tr><td>${esc(x.funcao)}</td><td class="tabular">${esc(x.qtd)}</td></tr>`).join('') || '<tr><td colspan="2" style="color:var(--muted)">Nenhum registro</td></tr>'}</tbody>
+      </table>
+
+      <h3 class="section-title" style="margin-top:18px;">${ic('grid')} Equipamentos</h3>
+      <table class="detail-table"><thead><tr><th>Equipamento</th><th>Qtd.</th><th>Situação</th><th>Horas</th></tr></thead>
+        <tbody>${(r.equipamentos||[]).map(x=>`<tr><td>${esc(x.nome)}</td><td class="tabular">${esc(x.qtd)}</td><td>${esc(x.situacao)}</td><td class="tabular">${esc(x.horas)}</td></tr>`).join('') || '<tr><td colspan="4" style="color:var(--muted)">Nenhum registro</td></tr>'}</tbody>
+      </table>
+
+      <h3 class="section-title" style="margin-top:18px;">${ic('building')} Atividades executadas</h3>
+      ${(r.atividades||[]).map(a=>`
+        <div class="act-block">
+          <div class="ab-top">
+            <div style="flex:1;">
+              <span class="status-chip" style="background:${ACT_STATUS_COLOR[a.status]};color:#fff;">${esc(a.status)}</span>
+              <span class="section-sub" style="margin-left:6px;">${esc(a.disciplina)} · ${esc(a.local)}</span>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin:6px 0 8px;">
+            <div class="progress-track"><div class="progress-fill" style="width:${a.percentual||0}%;"></div></div>
+            <span class="tabular mono" style="font-size:12px;">${a.percentual||0}%</span>
+          </div>
+          <div class="desc-photo-row" style="margin-top:0;">
+            <div class="ab-desc" style="margin:0;">${esc(a.descricao)}</div>
+            ${(a.fotos&&a.fotos.length)?`<div class="photo-grid">${a.fotos.map(f=>`<div class="photo-tile"><img src="${blobUrl(f.id)}" alt="${esc(f.legenda||'foto da atividade')}" onclick="openLightbox('${f.id}','${esc(f.legenda||'')}')">${f.legenda?`<div class="p-cap">${esc(f.legenda)}</div>`:''}</div>`).join('')}</div>`:`<p class="section-sub" style="margin:0;">Sem fotos anexadas.</p>`}
+          </div>
+        </div>
+      `).join('') || `<p class="section-sub">Nenhuma atividade registrada.</p>`}
+
+      <h3 class="section-title" style="margin-top:18px;">${ic('octagon')} Ocorrências</h3>
+      ${(r.ocorrencias||[]).length ? `<div style="display:flex;flex-direction:column;gap:8px;">${(r.ocorrencias||[]).map(o=>`<div style="display:flex;gap:10px;align-items:flex-start;"><div style="margin-top:2px;">${severityChip(o.gravidade)}</div><div style="font-size:13.5px;">${esc(o.descricao)}</div></div>`).join('')}</div>` : `<p class="section-sub">Sem ocorrências registradas.</p>`}
+
+      <h3 class="section-title" style="margin-top:18px;">${ic('pencil')} Observações</h3>
+      <p style="font-size:13.5px;white-space:pre-wrap;">${esc(r.observacoes)||'—'}</p>
+    </div>
+  `;
+  setView('form');
+}
+
+/* =========================================================================
+   EXPORTAR (texto simples via capacidade downloads)
+   ========================================================================= */
+function buildExportText(r){
+  const L=[];
+  L.push('RELATÓRIO DIÁRIO DE OBRA (RDO)');
+  L.push('='.repeat(40));
+  L.push('Nº RDO: '+String(r.numero||'—').padStart(3,'0'));
+  L.push('Obra: '+(r.obra||'—'));
+  L.push('Contratada: '+(r.contratada||'—'));
+  L.push('Cliente: '+(r.cliente||'—')+(r.contrato?'   Contrato: '+r.contrato:''));
+  L.push('Data: '+fmtDateLong(r.data));
+  L.push('Responsável técnico: '+(r.responsavel||'—'));
+  L.push('Status: '+(r.status==='emitido'?'Emitido':'Rascunho'));
+  L.push('');
+  L.push('CONDIÇÕES CLIMÁTICAS');
+  L.push('Manhã: '+(r.clima&&r.clima.manha)+' | Tarde: '+(r.clima&&r.clima.tarde)+' | Noite: '+(r.clima&&r.clima.noite));
+  L.push('Horas de chuva com impacto: '+((r.clima&&r.clima.chuvaHoras)||0)+'h');
+  L.push('');
+  L.push('EFETIVO');
+  (r.efetivo||[]).forEach(x=>L.push('- '+x.funcao+': '+x.qtd));
+  if(!(r.efetivo||[]).length) L.push('(nenhum registro)');
+  L.push('');
+  L.push('EQUIPAMENTOS');
+  (r.equipamentos||[]).forEach(x=>L.push('- '+x.nome+' (x'+x.qtd+') — '+x.situacao+' — '+x.horas+'h trabalhadas'));
+  if(!(r.equipamentos||[]).length) L.push('(nenhum registro)');
+  L.push('');
+  L.push('ATIVIDADES EXECUTADAS');
+  (r.atividades||[]).forEach((a,i)=>{
+    L.push((i+1)+'. ['+a.disciplina+'] '+a.descricao+' — Local: '+a.local+' — '+a.percentual+'% — '+a.status);
+    if(a.fotos&&a.fotos.length) L.push('   Fotos anexadas: '+a.fotos.length);
+  });
+  if(!(r.atividades||[]).length) L.push('(nenhuma atividade registrada)');
+  L.push('');
+  L.push('OCORRÊNCIAS');
+  (r.ocorrencias||[]).forEach(o=>L.push('- ['+o.gravidade+'] '+o.descricao));
+  if(!(r.ocorrencias||[]).length) L.push('(sem ocorrências)');
+  L.push('');
+  L.push('OBSERVAÇÕES GERAIS');
+  L.push(r.observacoes||'—');
+  return L.join('\n');
+}
+async function exportRdo(id){
+  const r=findRdo(id);
+  if(!r) return;
+  const text=buildExportText(r);
+  const filename='RDO-'+String(r.numero||'000').padStart(3,'0')+'-'+(r.data||'')+'.txt';
+  if(downloadsCap){
+    try{
+      await downloadsCap.save({filename, data:text});
+      toast('RDO exportado.');
+      return;
+    }catch(e){
+      if(e && e.code==='declined') return;
+      // segue para o fallback abaixo
+    }
+  }
+  try{
+    const blob=new Blob([text],{type:'text/plain'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob); a.download=filename;
+    document.body.appendChild(a); a.click(); a.remove();
+  }catch(e){ toast('Não foi possível exportar aqui. Copie os dados manualmente.', 'err'); }
+}
+
+/* =========================================================================
+   FORMULÁRIO (CRIAR / EDITAR)
+   ========================================================================= */
+function computeNextNumero(){
+  const nums = activeDataset().map(r=>Number(r.numero)||0);
+  return nums.length ? Math.max(...nums)+1 : 1;
+}
+function blankRdo(){
+  const last = activeDataset()[0];
+  return {
+    numero: computeNextNumero(),
+    obra: last ? last.obra : '',
+    contratada: last ? (last.contratada||'') : '',
+    cliente: last ? last.cliente : '',
+    contrato: last ? last.contrato : '',
+    data: todayISO(),
+    responsavel: claudeUser.name || (last?last.responsavel:'') || '',
+    clima: {manha:'Bom', tarde:'Bom', noite:'Bom', chuvaHoras:0, impacto:false},
+    efetivo: [], equipamentos: [], atividades: [], ocorrencias: [],
+    observacoes: '', status: 'rascunho',
+  };
+}
+function withKeys(rdo){
+  const c=JSON.parse(JSON.stringify(rdo));
+  (c.efetivo||[]).forEach(x=>x._k=x._k||uid());
+  (c.equipamentos||[]).forEach(x=>x._k=x._k||uid());
+  (c.atividades||[]).forEach(x=>{ x._k=x._k||uid(); (x.fotos||[]).forEach(f=>f._k=f._k||uid()); });
+  (c.ocorrencias||[]).forEach(x=>x._k=x._k||uid());
+  return c;
+}
+
+function openForm(id){
+  editingId=id;
+  const base = id ? findRdo(id) : blankRdo();
+  formState = withKeys(base);
+  importLog=null;
+  setView('form');
+  renderFormView();
+}
+
+/* =========================================================================
+   IMPORTAÇÃO DE PLANILHA EXCEL (SheetJS + JSZip)
+   Heurística: procura por rótulos conhecidos (Obra, Cliente, Data...) e por
+   tabelas com linha de cabeçalho reconhecível (Efetivo, Equipamentos,
+   Atividades, Ocorrências). Fotos embutidas no .xlsx são copiadas para o
+   Registro Fotográfico. É um "melhor esforço" — sempre revise após importar.
+   ========================================================================= */
+function matchEnum(value, list){
+  if(value==null||value==='') return null;
+  const n=normText(value);
+  return list.find(x=>normText(x)===n) || null;
+}
+function optionsWithExtra(list, current){
+  const extra = (current && !list.includes(current)) ? [current] : [];
+  return [...list, ...extra].map(o=>`<option ${current===o?'selected':''}>${esc(o)}</option>`).join('');
+}
+function normText(s){
+  return String(s==null?'':s).toLowerCase().normalize('NFD').replace(/\p{M}/gu,'')
+    .replace(/[°ºª.,:;()\[\]]/g,' ').replace(/\s+/g,' ').trim();
+}
+function sheetToGrid(ws){
+  if(!ws || !ws['!ref']) return [];
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  const grid=[];
+  for(let R=range.s.r; R<=range.e.r; R++){
+    const row=[];
+    for(let C=range.s.c; C<=range.e.c; C++){
+      const addr=XLSX.utils.encode_cell({r:R,c:C});
+      const cell=ws[addr];
+      let val='';
+      if(cell){
+        if(cell.t==='d') val = (cell.v instanceof Date)? cell.v : (cell.w!=null?cell.w:cell.v);
+        else val = (cell.w!=null && cell.w!=='') ? cell.w : cell.v;
+      }
+      row.push(val===undefined?'':val);
+    }
+    grid.push(row);
+  }
+  return grid;
+}
+function cellText(grid,r,c){ return (grid[r] && grid[r][c]!=null) ? grid[r][c] : ''; }
+function tight(s){ return normText(s).replace(/\s+/g,''); }
+const SECTION_TITLE_HINTS = ['atividadesemexecucao','atividades','equipamentos','efetivo','identificacao','assinatura','relatoriodiariodeobra'];
+function looksLikeSectionTitle(v){
+  const tt=tight(v);
+  if(!tt || tt.length<4) return false;
+  return SECTION_TITLE_HINTS.some(k=>tt.includes(k));
+}
+function rowHasKeyword(grid,r,keywords){
+  if(!grid[r]) return -1;
+  for(let c=0;c<grid[r].length;c++){
+    const t=normText(cellText(grid,r,c));
+    if(t && keywords.some(k=>t.includes(k))) return c;
+  }
+  return -1;
+}
+function findSectionTitleRow(grid, keyword){
+  for(let r=0;r<grid.length;r++){
+    for(let c=0;c<(grid[r]||[]).length;c++){
+      if(tight(cellText(grid,r,c)).includes(keyword)) return r;
+    }
+  }
+  return -1;
+}
+function findScalar(grid, keywords, opts){
+  opts=opts||{};
+  for(let r=0;r<grid.length;r++){
+    for(let c=0;c<grid[r].length;c++){
+      const raw=cellText(grid,r,c);
+      const t=normText(raw);
+      if(!t || t.length>80) continue;
+      if(opts.exclude && opts.exclude.some(x=>t.includes(x))) continue;
+      if(keywords.some(k=>t.includes(k))){
+        if(opts.sameCellRegex){
+          const m=String(raw).match(opts.sameCellRegex);
+          if(m) return m[1];
+        }
+        // "Rótulo: valor" na mesma célula
+        const rawStr=String(raw);
+        const colonIdx=rawStr.indexOf(':');
+        if(colonIdx>=0){
+          const after=rawStr.slice(colonIdx+1).trim();
+          if(after && !looksLikeSectionTitle(after)) return after;
+        }
+        // valor em células à direita, na mesma linha
+        for(let cc=c+1; cc<Math.min(grid[r].length,c+6); cc++){
+          const v=cellText(grid,r,cc);
+          if(v!=='' && v!=null && !looksLikeSectionTitle(v)) return v;
+        }
+        // valor em até 3 linhas abaixo, mesma coluna (rótulo isolado + valor embaixo)
+        for(let rr=r+1; rr<Math.min(grid.length,r+4); rr++){
+          const v=cellText(grid,rr,c);
+          if(v!=='' && v!=null && !looksLikeSectionTitle(v)) return v;
+        }
+      }
+    }
+  }
+  return null;
+}
+function findTableHeader(grid, roleKeywords){
+  const roles=Object.keys(roleKeywords);
+  const minMatches = Math.min(2, roles.length);
+  for(let r=0;r<grid.length;r++){
+    const colMap={};
+    for(let c=0;c<(grid[r]||[]).length;c++){
+      const t=normText(cellText(grid,r,c));
+      if(!t) continue;
+      for(const role of roles){
+        if(colMap[role]==null && roleKeywords[role].some(k=>t===k || t.includes(k))) colMap[role]=c;
+      }
+    }
+    if(Object.keys(colMap).length>=minMatches) return {headerRow:r, colMap};
+  }
+  return null;
+}
+function extractTableRows(grid, headerRow, colMap, maxRows){
+  const rows=[];
+  for(let r=headerRow+1; r<grid.length && rows.length<(maxRows||80); r++){
+    const vals={}; let anyFilled=false;
+    for(const role in colMap){
+      const v=cellText(grid,r,colMap[role]);
+      vals[role]=v;
+      if(v!=='' && v!=null) anyFilled=true;
+    }
+    if(!anyFilled) break;
+    rows.push(vals);
+  }
+  return rows;
+}
+// Matriz de clima no formato "Período" (linha) x "Manhã/Tarde/Noite" (colunas),
+// com uma marca (x) na célula do período escolhido para cada turno.
+function parseClimaMatrix(grid){
+  for(let r=0;r<grid.length;r++){
+    const cM=rowHasKeyword(grid,r,['manha']);
+    const cT=rowHasKeyword(grid,r,['tarde']);
+    const cN=rowHasKeyword(grid,r,['noite']);
+    if(cM>=0 && cT>=0){
+      const cols={manha:cM, tarde:cT, noite:cN>=0?cN:null};
+      const result={};
+      for(let rr=r+1; rr<Math.min(grid.length,r+8); rr++){
+        const label=normText(cellText(grid,rr,cM-1)||cellText(grid,rr,0));
+        if(!label) continue;
+        let periodo=null;
+        if(label.includes('bom')) periodo='Bom';
+        else if(label.includes('chuv')) periodo='Chuvoso';
+        else if(label.includes('ruim') || label.includes('nublad')) periodo='Nublado';
+        if(!periodo) continue;
+        for(const turno of ['manha','tarde','noite']){
+          const cc=cols[turno];
+          if(cc==null) continue;
+          const v=String(cellText(grid,rr,cc)||'').trim().toLowerCase();
+          if(v && (v==='x' || v==='1' || v==='sim')) result[turno]=periodo;
+        }
+      }
+      if(Object.keys(result).length) return result;
+    }
+  }
+  return null;
+}
+// Lê um par de colunas SIM/NÃO numa linha e devolve qual foi marcada com 'x'.
+// Lê o par de rótulos SIM/NÃO de uma linha (colunas cSim/cNao) e olha, 1 a 3
+// colunas depois de cada rótulo, por uma marcação (x / 1) — é ali, e não no
+// próprio rótulo, que o modelo da DG registra a resposta escolhida.
+function readSimNao(grid, r, cSim, cNao){
+  const isMark=(v)=>{ const t=String(v||'').trim().toLowerCase(); return t==='x' || t==='1'; };
+  for(let off=1; off<=3; off++){ if(isMark(cellText(grid,r,cSim+off))) return 'SIM'; }
+  for(let off=1; off<=3; off++){ if(isMark(cellText(grid,r,cNao+off))) return 'NAO'; }
+  return null;
+}
+// Checklist de segurança (DDS, prejuízo material, violação de segurança, ociosidade)
+// com colunas SIM/NÃO — converte respostas-problema em ocorrências.
+function extractSafetyChecklistOcorrencias(grid){
+  const checks=[
+    {keywords:['dds','dialogo diario'], label:'DDS não realizado', positiveIsProblem:false},
+    {keywords:['prejuizo material'], label:'Prejuízo material registrado', positiveIsProblem:true},
+    {keywords:['violac'], label:'Violação de segurança registrada', positiveIsProblem:true},
+    {keywords:['ociosidade'], label:'Ociosidade por acidente registrada', positiveIsProblem:true},
+  ];
+  const out=[];
+  for(let r=0;r<grid.length;r++){
+    for(const chk of checks){
+      const c=rowHasKeyword(grid,r,chk.keywords);
+      if(c<0) continue;
+      const simCol=rowHasKeyword(grid,r,['sim']);
+      const naoCol=rowHasKeyword(grid,r,['nao']);
+      if(simCol<0 || naoCol<0) continue;
+      const answer=readSimNao(grid, r, simCol, naoCol);
+      if(!answer) continue;
+      const isProblem = chk.positiveIsProblem ? answer==='SIM' : answer==='NAO';
+      if(isProblem) out.push({descricao: chk.label, gravidade: 'Média'});
+    }
+  }
+  return out;
+}
+// Localiza, dentro de [sectionStart,sectionEnd), os títulos dos blocos
+// (ex.: "MÃO DE OBRA DIRETA"/"INDIRETA", "CONTRATADA"/"TERCEIROS") e devolve
+// {key,titleRow,titleCol} ordenados pela coluna — a ordem das colunas define
+// a "região" de cada bloco na planilha.
+function findBlockTitles(grid, sectionStart, sectionEnd, blockDefs){
+  const found=[];
+  for(const bd of blockDefs){
+    let titleRow=-1, titleCol=-1;
+    for(let r=sectionStart;r<sectionEnd && titleRow<0;r++){
+      for(let c=0;c<(grid[r]||[]).length;c++){
+        const t=tight(cellText(grid,r,c));
+        if(t && bd.keywords.some(k=>t.includes(k))){ titleRow=r; titleCol=c; break; }
+      }
+    }
+    if(titleRow>=0) found.push({key:bd.key, titleRow, titleCol});
+  }
+  found.sort((a,b)=>a.titleCol-b.titleCol);
+  return found;
+}
+// Procura, em toda a seção e dentro de uma faixa de colunas [colStart,colEnd),
+// a primeira célula cujo texto normalizado satisfaz isHeaderText — usada para
+// achar a coluna "Real"/"Total Real" de um bloco, que pode estar em qualquer
+// linha da seção (acima, ao lado ou abaixo do título do bloco, conforme o
+// modelo da planilha).
+function findQtyColumnInRegion(grid, sectionStart, sectionEnd, colStart, colEnd, isHeaderText){
+  for(let r=sectionStart;r<sectionEnd;r++){
+    for(let c=colStart;c<colEnd && c<(grid[r]||[]).length;c++){
+      const t=normText(cellText(grid,r,c));
+      if(t && isHeaderText(t)) return c;
+    }
+  }
+  return -1;
+}
+// Blocos de mão de obra sem cabeçalho literal de coluna "Função": o título do
+// bloco (ex.: "MÃO DE OBRA DIRETA") ancora a coluna do nome; a quantidade vem
+// da coluna "Total Real" mais próxima, buscada em toda a seção.
+function extractMaoDeObraBlocks(grid, sectionStart, sectionEnd){
+  const titles = findBlockTitles(grid, sectionStart, sectionEnd, [
+    {keywords:['maodeobraindireta'], key:'indireta'},
+    {keywords:['maodeobradireta'], key:'direta'},
+  ]);
+  const out=[];
+  for(let i=0;i<titles.length;i++){
+    const {titleRow, titleCol}=titles[i];
+    const colEnd = (i+1<titles.length) ? titles[i+1].titleCol : Infinity;
+    const qtdCol = findQtyColumnInRegion(grid, sectionStart, sectionEnd, titleCol, colEnd, t=>t==='real' || t.includes('total real'));
+    for(let r=titleRow+1;r<sectionEnd;r++){
+      const nome=String(cellText(grid,r,titleCol)||'').trim();
+      if(!nome) continue;
+      if(looksLikeSectionTitle(nome)) break;
+      const nt=normText(nome);
+      if(nt.includes('total') || nt.startsWith('funcao')) continue;
+      const qtd = qtdCol>=0 ? toNumber(cellText(grid,r,qtdCol)) : 0;
+      if(qtd<=0) continue;
+      out.push({funcao:nome, qtd});
+    }
+  }
+  return out;
+}
+// Mesma lógica dos blocos de mão de obra, mas para equipamentos (blocos
+// "CONTRATADA" / "TERCEIROS"), quantidade pela coluna "Real".
+function extractEquipamentoBlocks(grid, sectionStart, sectionEnd){
+  const titles = findBlockTitles(grid, sectionStart, sectionEnd, [
+    {keywords:['contratada'], key:'contratada'},
+    {keywords:['terceiros'], key:'terceiros'},
+  ]);
+  const out=[];
+  for(let i=0;i<titles.length;i++){
+    const {titleRow, titleCol}=titles[i];
+    const colEnd = (i+1<titles.length) ? titles[i+1].titleCol : Infinity;
+    const qtdCol = findQtyColumnInRegion(grid, sectionStart, sectionEnd, titleCol, colEnd, t=>t==='real' || t.includes('qtd real'));
+    for(let r=titleRow+1;r<sectionEnd;r++){
+      const nome=String(cellText(grid,r,titleCol)||'').trim();
+      if(!nome) continue;
+      if(looksLikeSectionTitle(nome)) break;
+      const nt=normText(nome);
+      if(nt.includes('total')) continue;
+      const qtd = qtdCol>=0 ? toNumber(cellText(grid,r,qtdCol)) : 0;
+      if(qtd<=0) continue;
+      out.push({nome, qtd, situacao:'Operando', horas:0});
+    }
+  }
+  return out;
+}
+// Tenta reconhecer, num parágrafo de atividade em texto livre, um percentual
+// e um status implícitos (ex.: "...100% CONCLUÍDAS", "...serviço paralisado").
+function inferActivityMeta(text){
+  const t=normText(text);
+  let percentual=0, status='Em andamento';
+  const pct=text.match(/(\d{1,3})\s*%/);
+  if(pct) percentual=Math.min(100, parseInt(pct[1],10));
+  if(t.includes('concluid')){ status='Concluída'; if(!percentual) percentual=100; }
+  else if(t.includes('paralisad')){ status='Paralisada'; }
+  else if(t.includes('nao iniciad')){ status='Planejada'; percentual=0; }
+  return {percentual, status};
+}
+// Quando não há tabela estruturada de atividades — apenas parágrafos de texto
+// livre sob o título "ATIVIDADES EM EXECUÇÃO" — cada célula não vazia depois
+// do título vira um registro de atividade (rótulos de campo como
+// "OBSERVAÇÕES :" são descartados, não são atividades).
+function extractFreeTextActivities(grid, titleRow){
+  const out=[];
+  for(let r=titleRow+1;r<Math.min(grid.length,titleRow+12);r++){
+    for(let c=0;c<(grid[r]||[]).length;c++){
+      const v=cellText(grid,r,c);
+      const s=String(v||'').trim();
+      if(!s || s.length<8) continue;
+      if(looksLikeSectionTitle(s)) continue;
+      if(/^\d+([.,]\d+)?%?$/.test(s)) continue;
+      if(/:\s*$/.test(s) && s.length<50) continue;
+      const meta=inferActivityMeta(s);
+      out.push({descricao:s, local:'', disciplina:'Outras', percentual:meta.percentual, status:meta.status, fotos:[], _row:r, _col:c});
+    }
+  }
+  return out;
+}
+// Resolve um Target relativo de relacionamento OOXML (ex.: "../media/x.png")
+// a partir do diretório do arquivo que o referencia.
+function resolveRelPath(baseDir, target){
+  if(!target) return null;
+  if(target.startsWith('/')) return target.replace(/^\/+/,'');
+  const parts=(baseDir+'/'+target).split('/');
+  const out=[];
+  for(const p of parts){
+    if(p==='..') out.pop();
+    else if(p==='' || p==='.') continue;
+    else out.push(p);
+  }
+  return out.join('/');
+}
+// Lê xl/workbook.xml + as cadeias de relacionamento (workbook → planilha →
+// desenho → imagem) para descobrir ONDE cada imagem foi ancorada na
+// planilha (aba, linha e coluna) — é essa posição que permite vincular cada
+// foto à atividade ao lado da qual ela foi colada no Excel, em vez de jogar
+// tudo genericamente no registro fotográfico geral.
+async function extractImageAnchors(zip){
+  const result={};
+  if(typeof DOMParser==='undefined') return result;
+  const parser=new DOMParser();
+  const readXml=async(path)=>{
+    const f=zip.file(path);
+    if(!f) return null;
+    try{ return parser.parseFromString(await f.async('text'), 'application/xml'); }
+    catch(e){ return null; }
+  };
+  const relMap=(doc)=>{
+    const m={};
+    if(!doc) return m;
+    Array.from(doc.getElementsByTagName('Relationship')).forEach(el=>{
+      m[el.getAttribute('Id')]={target:el.getAttribute('Target'), type:el.getAttribute('Type')||''};
+    });
+    return m;
+  };
+  const wbDoc = await readXml('xl/workbook.xml');
+  if(!wbDoc) return result;
+  const wbRelsDoc = await readXml('xl/_rels/workbook.xml.rels');
+  const wbRels = relMap(wbRelsDoc);
+  const sheetEls = Array.from(wbDoc.getElementsByTagName('sheet'));
+  for(const el of sheetEls){
+    const sheetName = el.getAttribute('name');
+    const rId = el.getAttribute('r:id') || el.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id');
+    const rel = rId && wbRels[rId];
+    if(!rel) continue;
+    const sheetPath = resolveRelPath('xl', rel.target);
+    if(!sheetPath) continue;
+    const sheetDir = sheetPath.substring(0, sheetPath.lastIndexOf('/'));
+    const sheetFile = sheetPath.substring(sheetPath.lastIndexOf('/')+1);
+    const sheetRelsDoc = await readXml(sheetDir+'/_rels/'+sheetFile+'.rels');
+    const sheetRels = relMap(sheetRelsDoc);
+    const drawingRel = Object.values(sheetRels).find(r=>/drawing/i.test(r.type));
+    if(!drawingRel) continue;
+    const drawingPath = resolveRelPath(sheetDir, drawingRel.target);
+    const drawingDoc = await readXml(drawingPath);
+    if(!drawingDoc) continue;
+    const drawingDir = drawingPath.substring(0, drawingPath.lastIndexOf('/'));
+    const drawingFile = drawingPath.substring(drawingPath.lastIndexOf('/')+1);
+    const drawingRelsDoc = await readXml(drawingDir+'/_rels/'+drawingFile+'.rels');
+    const drawingRels = relMap(drawingRelsDoc);
+    const anchorNodes=[
+      ...Array.from(drawingDoc.getElementsByTagName('xdr:twoCellAnchor')),
+      ...Array.from(drawingDoc.getElementsByTagName('xdr:oneCellAnchor')),
+    ];
+    for(const anchor of anchorNodes){
+      const fromEl = anchor.getElementsByTagName('xdr:from')[0];
+      if(!fromEl) continue;
+      const colEl = fromEl.getElementsByTagName('xdr:col')[0];
+      const rowEl = fromEl.getElementsByTagName('xdr:row')[0];
+      if(!colEl || !rowEl) continue;
+      const col = parseInt(colEl.textContent, 10);
+      const row = parseInt(rowEl.textContent, 10);
+      const blipEl = anchor.getElementsByTagName('a:blip')[0];
+      if(!blipEl) continue;
+      const embedId = blipEl.getAttribute('r:embed') || blipEl.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','embed');
+      const imgRel = embedId && drawingRels[embedId];
+      if(!imgRel) continue;
+      const mediaPath = resolveRelPath(drawingDir, imgRel.target);
+      if(!mediaPath || isNaN(row) || isNaN(col)) continue;
+      (result[mediaPath]=result[mediaPath]||[]).push({sheetName, row, col});
+    }
+  }
+  return result;
+}
+// Decide a qual atividade (se alguma) uma imagem ancorada em (sheetName,row,col)
+// pertence: só vincula quando a imagem está a poucas linhas de distância da
+// atividade (evita pegar logos/carimbos de assinatura distantes) e, entre
+// atividades da mesma linha (colunas lado a lado), escolhe pela faixa de
+// colunas mais próxima da posição da imagem.
+function matchImageToActivity(atividades, sheetName, row, col){
+  const MAX_ROW_DIST=4;
+  const candidates=(atividades||[]).filter(a=>a._sheet===sheetName && a._row!=null && Math.abs(a._row-row)<=MAX_ROW_DIST);
+  if(!candidates.length) return null;
+  let best=null, bestScore=Infinity;
+  for(const a of candidates){
+    const rowDist=Math.abs(a._row-row);
+    const sameRow=candidates.filter(x=>x._row===a._row).sort((x,y)=>x._col-y._col);
+    const idx=sameRow.indexOf(a);
+    const colStart=a._col;
+    const colEnd=(idx+1<sameRow.length) ? sameRow[idx+1]._col : Infinity;
+    const colOk = col>=colStart && col<colEnd;
+    const score = rowDist*10 + (colOk?0:6);
+    if(score<bestScore){ bestScore=score; best=a; }
+  }
+  return best;
+}
+function toNumber(v){
+  if(v==null||v==='') return 0;
+  if(typeof v==='number') return v;
+  const n=parseFloat(String(v).replace(',','.').replace(/[^\d.\-]/g,''));
+  return isNaN(n)?0:n;
+}
+function toPercent(v){
+  if(v==null||v==='') return 0;
+  if(typeof v==='number') return v<=1? Math.round(v*100) : Math.round(v);
+  const s=String(v);
+  const n=parseFloat(s.replace(',','.').replace(/[^\d.]/g,''));
+  if(isNaN(n)) return 0;
+  return s.includes('%') ? Math.round(n) : (n<=1? Math.round(n*100): Math.round(n));
+}
+function parseDateFlexible(v){
+  if(v==null||v==='') return null;
+  if(v instanceof Date && !isNaN(v)) return v.toISOString().slice(0,10);
+  const s=String(v).trim();
+  let m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+  if(m){ let d=m[1], mo=m[2], y=m[3]; if(y.length===2) y='20'+y; return y+'-'+mo.padStart(2,'0')+'-'+d.padStart(2,'0'); }
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(m) return m[0].slice(0,10);
+  return null;
+}
+function parseGridToRdo(grid, sheetName){
+  const out={}; const lines=[]; const warnings=[];
+
+  const numero = findScalar(grid, ['n rdo','rdo n','numero do rdo','numero rdo','relatorio n'], {sameCellRegex:/(\d{1,5})\D*$/});
+  if(numero!=null){ const n=toNumber(numero); if(n>0){ out.numero=n; lines.push('Nº do RDO: '+n); } }
+
+  const dataVal = findScalar(grid, ['data'], {exclude:['data de emissao','validade']});
+  const dataIso = parseDateFlexible(dataVal);
+  if(dataIso){ out.data=dataIso; lines.push('Data: '+dataIso); }
+
+  const contratada = findScalar(grid, ['contratada'], {exclude:['mao de obra contratada']});
+  if(contratada){ out.contratada=String(contratada); lines.push('Contratada: '+contratada); }
+
+  const obra = findScalar(grid, ['obra','projeto'], {exclude:['mao de obra','relatorio diario de obra','diario de obra','relatorio diario']});
+  if(obra){ out.obra=String(obra); lines.push('Obra: '+obra); }
+
+  const cliente = findScalar(grid, ['cliente','contratante']);
+  if(cliente){ out.cliente=String(cliente); lines.push('Cliente: '+cliente); }
+
+  const contrato = findScalar(grid, ['contrato']);
+  if(contrato){ out.contrato=String(contrato); lines.push('Contrato: '+contrato); }
+
+  const responsavel = findScalar(grid, ['responsavel tecnico','responsavel','engenheiro responsavel']);
+  if(responsavel){ out.responsavel=String(responsavel); lines.push('Responsável: '+responsavel); }
+
+  const chuva = findScalar(grid, ['hora de chuva','horas de chuva','chuva perdida']);
+  if(chuva!=null){ out.clima=out.clima||{}; out.clima.chuvaHoras=toNumber(chuva); }
+
+  // Clima: tenta primeiro o padrão em matriz (Período x turno com marcação 'x'),
+  // depois o padrão simples (cabeçalho Manhã/Tarde/Noite + valor na linha de baixo).
+  const climaMatrix = parseClimaMatrix(grid);
+  if(climaMatrix){
+    out.clima=Object.assign({}, out.clima, climaMatrix);
+    lines.push('Clima identificado (manhã / tarde / noite)');
+  } else {
+    for(let r=0;r<grid.length-1;r++){
+      const idxM=rowHasKeyword(grid,r,['manha']);
+      const idxT=rowHasKeyword(grid,r,['tarde']);
+      const idxN=rowHasKeyword(grid,r,['noite']);
+      if(idxM>=0 && idxT>=0 && idxN>=0){
+        out.clima=out.clima||{};
+        const vm=cellText(grid,r+1,idxM), vt=cellText(grid,r+1,idxT), vn=cellText(grid,r+1,idxN);
+        if(vm) out.clima.manha=String(vm);
+        if(vt) out.clima.tarde=String(vt);
+        if(vn) out.clima.noite=String(vn);
+        lines.push('Clima identificado (manhã / tarde / noite)');
+        break;
+      }
+    }
+  }
+
+  const obs = findScalar(grid, ['observacoes gerais','observacao geral','obs gerais','observacoes']);
+  if(obs){ out.observacoes=String(obs); lines.push('Observações gerais importadas'); }
+
+  // Localiza os títulos das grandes seções (letter-spaced no template padrão
+  // DG) para delimitar onde cada bloco de dados começa e termina.
+  const rowEfetivoTitle = findSectionTitleRow(grid, 'efetivo');
+  const rowEquipTitle = findSectionTitleRow(grid, 'equipamentos');
+  const rowAtivTitle = findSectionTitleRow(grid, 'atividadesemexecucao') >=0
+    ? findSectionTitleRow(grid, 'atividadesemexecucao')
+    : findSectionTitleRow(grid, 'atividades');
+  const sectionBoundaries=[rowEfetivoTitle, rowEquipTitle, rowAtivTitle].filter(x=>x>=0).sort((a,b)=>a-b);
+  function nextBoundaryAfter(r){
+    const nxt=sectionBoundaries.find(b=>b>r);
+    return nxt!=null? nxt : grid.length;
+  }
+
+  // Efetivo: tenta o padrão de blocos "MÃO DE OBRA INDIRETA/DIRETA" (template DG);
+  // se não encontrar nada, cai para a extração genérica por cabeçalho de tabela.
+  let efetivoRows=[];
+  if(rowEfetivoTitle>=0){
+    efetivoRows = extractMaoDeObraBlocks(grid, rowEfetivoTitle, nextBoundaryAfter(rowEfetivoTitle));
+  }
+  if(!efetivoRows.length){
+    const efetivoHeader = findTableHeader(grid, {funcao:['funcao','cargo'], qtd:['qtd','quant','qde']});
+    if(efetivoHeader){
+      efetivoRows = extractTableRows(grid, efetivoHeader.headerRow, efetivoHeader.colMap)
+        .filter(r=>r.funcao).map(r=>({funcao:String(r.funcao), qtd:toNumber(r.qtd)||1}));
+    }
+  }
+  if(efetivoRows.length){ out.efetivo=efetivoRows; lines.push('Efetivo: '+out.efetivo.length+' função(ões) importada(s)'); }
+
+  // Equipamentos: idem, blocos "CONTRATADA/TERCEIROS" primeiro.
+  let equipRows=[];
+  if(rowEquipTitle>=0){
+    equipRows = extractEquipamentoBlocks(grid, rowEquipTitle, nextBoundaryAfter(rowEquipTitle));
+  }
+  if(!equipRows.length){
+    const equipHeader = findTableHeader(grid, {nome:['equipamento','maquina'], qtd:['qtd','quant']});
+    if(equipHeader){
+      equipRows = extractTableRows(grid, equipHeader.headerRow, equipHeader.colMap)
+        .filter(r=>r.nome).map(r=>({nome:String(r.nome), qtd:toNumber(r.qtd)||1, situacao:'Operando', horas:0}));
+    }
+  }
+  if(equipRows.length){ out.equipamentos=equipRows; lines.push('Equipamentos: '+out.equipamentos.length+' item(ns) importado(s)'); }
+
+  // Atividades: tabela estruturada primeiro; se a planilha só traz parágrafos
+  // de texto livre (padrão do template DG), usa a extração por texto livre.
+  const actHeader = findTableHeader(grid, {descricao:['atividade','descricao','servico'], local:['local','area'], percentual:['%','avanco','percentual'], status:['status','situacao']});
+  let atividadesRows=[];
+  if(actHeader){
+    const rows=extractTableRows(grid, actHeader.headerRow, actHeader.colMap);
+    rows.forEach((r,idx)=>{
+      if(!r.descricao) return;
+      atividadesRows.push({
+        descricao:String(r.descricao), local: r.local?String(r.local):'', disciplina:'Outras',
+        percentual: r.percentual!=null? toPercent(r.percentual):0,
+        status: r.status? String(r.status): 'Planejada', fotos:[],
+        _sheet: sheetName, _row: actHeader.headerRow+1+idx, _col: actHeader.colMap.descricao,
+      });
+    });
+  }
+  if(!atividadesRows.length && rowAtivTitle>=0){
+    atividadesRows = extractFreeTextActivities(grid, rowAtivTitle).map(a=>Object.assign({_sheet:sheetName}, a));
+  }
+  if(atividadesRows.length){
+    out.atividades = atividadesRows;
+    lines.push('Atividades: '+out.atividades.length+' registro(s) importado(s)');
+  } else {
+    warnings.push('Tabela de atividades não identificada automaticamente nesta planilha — confira manualmente.');
+  }
+
+  const occHeader = findTableHeader(grid, {descricao:['ocorrencia','nao conformidade'], gravidade:['gravidade','severidade']});
+  let ocorrenciasRows=[];
+  if(occHeader){
+    const rows=extractTableRows(grid, occHeader.headerRow, occHeader.colMap).filter(r=>r.descricao);
+    if(rows.length){ ocorrenciasRows = rows.map(r=>({descricao:String(r.descricao), gravidade: matchEnum(r.gravidade,SEVERIDADES)||'Baixa'})); }
+  }
+  // Checklist de segurança (DDS / prejuízo material / violação / ociosidade),
+  // quando presente, também pode gerar ocorrências automaticamente.
+  const safetyOcc = extractSafetyChecklistOcorrencias(grid);
+  if(safetyOcc.length) ocorrenciasRows = ocorrenciasRows.concat(safetyOcc);
+  if(ocorrenciasRows.length){ out.ocorrencias=ocorrenciasRows; lines.push('Ocorrências: '+out.ocorrencias.length+' registro(s) importado(s)'); }
+
+  return {out, lines, warnings};
+}
+function mergeParsed(base, add){
+  for(const k in add.out){
+    if(Array.isArray(add.out[k])) base.out[k]=(base.out[k]||[]).concat(add.out[k]);
+    else if(k==='clima') base.out.clima=Object.assign({}, base.out.clima, add.out.clima);
+    else if(base.out[k]==null || base.out[k]==='') base.out[k]=add.out[k];
+  }
+  base.lines=base.lines.concat(add.lines);
+  base.warnings=base.warnings.concat(add.warnings);
+}
+async function handleExcelImport(ev){
+  const file = ev.target.files && ev.target.files[0];
+  ev.target.value='';
+  if(!file) return;
+  if(typeof XLSX==='undefined'){
+    importLog={error:'Não foi possível carregar o leitor de planilhas agora (verifique sua conexão) — tente novamente em alguns segundos.'};
+    renderFormView(); return;
+  }
+  toast('Lendo planilha...');
+  try{
+    const buf = await file.arrayBuffer();
+    const wb = XLSX.read(buf.slice(0), {type:'array', cellDates:true});
+    const combined = {out:{}, lines:[], warnings:[]};
+    wb.SheetNames.forEach(name=>{
+      const grid = sheetToGrid(wb.Sheets[name]);
+      if(grid.length) mergeParsed(combined, parseGridToRdo(grid, name));
+    });
+
+    const o=combined.out;
+    ['numero','data','obra','contratada','cliente','contrato','responsavel','observacoes'].forEach(k=>{
+      if(o[k]!=null && o[k]!=='') formState[k]=o[k];
+    });
+    if(o.clima) formState.clima = Object.assign({}, formState.clima, o.clima);
+    if(o.efetivo && o.efetivo.length) formState.efetivo = o.efetivo.map(x=>Object.assign({_k:uid()},x));
+    if(o.equipamentos && o.equipamentos.length) formState.equipamentos = o.equipamentos.map(x=>Object.assign({_k:uid()},x));
+    // mantém _row/_col/_sheet (posição na planilha) temporariamente — usados
+    // logo abaixo para vincular automaticamente cada foto à atividade certa.
+    if(o.atividades && o.atividades.length) formState.atividades = o.atividades.map(x=>Object.assign({fotos:[]},x,{_k:uid()}));
+    if(o.ocorrencias && o.ocorrencias.length) formState.ocorrencias = o.ocorrencias.map(x=>Object.assign({_k:uid()},x));
+
+    let lines=combined.lines.slice();
+    let warnings=combined.warnings.slice();
+    let photoLinkedCount=0, photoSkippedCount=0;
+
+    if(typeof JSZip!=='undefined' && /\.xlsx$/i.test(file.name)){
+      try{
+        const zip = await JSZip.loadAsync(buf.slice(0));
+        const mediaFiles = Object.keys(zip.files).filter(n=>/^xl\/media\//i.test(n) && !zip.files[n].dir).sort();
+        if(mediaFiles.length){
+          if(!assetsCap){
+            warnings.push(mediaFiles.length+' foto(s) encontrada(s) na planilha, mas anexar fotos requer permissão de edição'+(usingLocalFallback?' e não está disponível no modo local deste navegador':' neste painel')+'.');
+          } else {
+            let anchors={};
+            try{ anchors = await extractImageAnchors(zip); }
+            catch(e){ console.warn('falha ao ler posição das imagens', e); }
+            const hasAnchorData = Object.keys(anchors).length>0;
+            let rr=0, photoConvertedCount=0;
+            for(const name of mediaFiles){
+              const ext=(name.split('.').pop()||'').toLowerCase();
+              const knownMime={png:'image/png',jpg:'image/jpeg',jpeg:'image/jpeg',gif:'image/gif',webp:'image/webp'}[ext];
+              // decide o destino ANTES de subir a imagem: se a planilha informa a
+              // posição de cada figura, só sobem (e só ficam vinculadas) as que
+              // realmente estão coladas ao lado de uma atividade — descarta logos
+              // de cabeçalho/assinatura. Sem essa informação de posição, distribui
+              // as fotos entre as atividades existentes em vez de perdê-las.
+              let activity=null;
+              if(hasAnchorData){
+                for(const spot of (anchors[name]||[])){
+                  activity = matchImageToActivity(formState.atividades, spot.sheetName, spot.row, spot.col);
+                  if(activity) break;
+                }
+              } else if((formState.atividades||[]).length){
+                activity = formState.atividades[rr % formState.atividades.length];
+                rr++;
+              }
+              if(!activity){ photoSkippedCount++; continue; }
+              try{
+                const bytes = await zip.files[name].async('uint8array');
+                let blob, mime;
+                if(knownMime){
+                  blob = new Blob([bytes], {type:knownMime});
+                  mime = knownMime;
+                } else {
+                  // Formato não reconhecido direto (BMP, TIFF, HEIC/HEIF de iPhone,
+                  // etc.) — converte para PNG/JPEG antes de desistir da foto.
+                  const guessMime={bmp:'image/bmp',tif:'image/tiff',tiff:'image/tiff',heic:'image/heic',heif:'image/heif'}[ext] || 'application/octet-stream';
+                  const rawFile = new File([bytes], name.split('/').pop(), {type:guessMime});
+                  const fixed = await ensureCompatiblePhoto(rawFile);
+                  blob = fixed.blob; mime = fixed.mime;
+                  photoConvertedCount++;
+                }
+                const res = await assetsCap.upload(blob, {type:mime});
+                activity.fotos = activity.fotos||[];
+                activity.fotos.push({id:res.id, legenda:'', _k:uid()});
+                photoLinkedCount++;
+              }catch(e){
+                console.warn('falha upload/conversão foto planilha', e);
+                warnings.push('Formato de imagem ".'+ext+'" da planilha ('+name.split('/').pop()+') não pôde ser convertido para anexar automaticamente.');
+              }
+            }
+            if(photoConvertedCount) lines.push(photoConvertedCount+' foto(s) da planilha convertida(s) automaticamente para um formato compatível');
+          }
+        }
+      }catch(e){
+        console.warn('falha ao ler imagens da planilha', e);
+        warnings.push('Não foi possível extrair as fotos da planilha (o arquivo pode estar corrompido ou em formato não suportado).');
+      }
+    } else if(/\.xls$/i.test(file.name)){
+      warnings.push('Arquivos .xls (formato antigo) não permitem extrair fotos automaticamente — anexe-as manualmente na atividade correspondente, se houver.');
+    }
+    // remove os campos temporários de posição — já cumpriram o papel de guiar o vínculo das fotos
+    (formState.atividades||[]).forEach(a=>{ delete a._row; delete a._col; delete a._sheet; });
+    if(photoLinkedCount) lines.push(photoLinkedCount+' foto(s) vinculada(s) automaticamente à atividade correspondente');
+    if(photoSkippedCount) warnings.push(photoSkippedCount+' foto(s) da planilha (provavelmente logos/carimbos) não pareciam pertencer a uma atividade e foram ignoradas.');
+
+    importLog = lines.length ? {lines, warnings} : {error:'Não identifiquei campos conhecidos nesta planilha. Preencha manualmente, ou me envie um exemplo do modelo (anexado no chat) para eu ajustar a importação a ele.'};
+  }catch(e){
+    console.warn('erro import excel', e);
+    importLog={error:'Não foi possível ler este arquivo. Verifique se é um Excel (.xlsx ou .xls) válido.'};
+  }
+  renderFormView();
+}
+
+function canWriteShared(){
+  // otimista: se não sabemos (null) ou sim, deixamos escrever; se explicitamente false, bloqueia.
+  return claudeUser.canWrite !== false;
+}
+
+function renderFormView(){
+  const el=document.getElementById('view-form');
+  const f=formState;
+  const readOnlyRemote = !usingLocalFallback && dbCap && !canWriteShared();
+
+  el.innerHTML = `
+    <div class="form-header">
+      <button class="btn btn-ghost" onclick="setView('diario')">${ic('arrowleft')} Voltar</button>
+      <h2 style="margin:0;">${editingId? 'Editar RDO' : 'Novo RDO'}</h2>
+      <span></span>
+    </div>
+
+    ${readOnlyRemote ? `<div class="readonly-note">${ic('triangle')} Você tem acesso apenas de visualização neste painel. Peça permissão de edição para registrar um RDO.</div>` : ''}
+
+    ${!readOnlyRemote ? `
+    <div class="form-section card import-card">
+      <div class="import-row">
+        <div class="import-icon">${ic('sheet')}</div>
+        <div class="import-text">
+          <strong>Importar RDO de uma planilha Excel</strong>
+          <p>Selecione o arquivo (.xlsx) do RDO do dia — o painel tenta preencher os campos abaixo automaticamente e vincula as fotos da planilha à atividade correspondente.</p>
+        </div>
+        <label class="btn btn-primary" id="importBtnLabel">${ic('upload')} Selecionar arquivo
+          <input type="file" accept=".xlsx,.xls" style="display:none" onchange="handleExcelImport(event)">
+        </label>
+      </div>
+      ${importLog ? `
+        <div class="import-log">
+          ${importLog.error ? `<p class="warn-line">${ic('triangle')} ${esc(importLog.error)}</p>` : `
+            <p><strong>${ic('check')} Importação concluída</strong> — revise os campos antes de salvar.</p>
+            <ul>${importLog.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>
+            ${importLog.warnings.length ? `<ul>${importLog.warnings.map(w=>`<li class="warn-line">${esc(w)}</li>`).join('')}</ul>` : ''}
+          `}
+        </div>` : ''}
+    </div>` : ''}
+
+    <div class="form-section card">
+      <h3>${ic('building')} Identificação</h3>
+      <p class="fs-sub">Dados de cabeçalho do relatório diário de obra.</p>
+      <div class="field-grid g3">
+        <div class="field"><label>Nº do RDO</label><input class="input mono" type="number" value="${esc(f.numero)}" oninput="updateField('numero', this.valueAsNumber||0)"></div>
+        <div class="field"><label>Data</label><input class="input" type="date" value="${esc(f.data)}" oninput="updateField('data', this.value)"></div>
+        <div class="field"><label>Responsável técnico</label><input class="input" value="${esc(f.responsavel)}" oninput="updateField('responsavel', this.value)"></div>
+        <div class="field span-2"><label>Obra / Projeto</label><input class="input" list="obraList" value="${esc(f.obra)}" oninput="updateField('obra', this.value)"></div>
+        <div class="field"><label>Contratada</label><input class="input" value="${esc(f.contratada||'')}" oninput="updateField('contratada', this.value)"></div>
+        <div class="field"><label>Cliente</label><input class="input" value="${esc(f.cliente)}" oninput="updateField('cliente', this.value)"></div>
+        <div class="field"><label>Contrato</label><input class="input" value="${esc(f.contrato)}" oninput="updateField('contrato', this.value)"></div>
+      </div>
+      <datalist id="obraList">${[...new Set(activeDataset().map(r=>r.obra).filter(Boolean))].map(o=>`<option value="${esc(o)}">`).join('')}</datalist>
+    </div>
+
+    <div class="form-section card">
+      <h3>${ic('cloud')} Condições climáticas</h3>
+      <p class="fs-sub">Registro por período e impacto no cronograma.</p>
+      <div class="field-grid g3">
+        ${['manha','tarde','noite'].map(p=>`
+          <div class="field"><label>${p==='manha'?'Manhã':p==='tarde'?'Tarde':'Noite'}</label>
+            <select class="select" onchange="updateClimaField('${p}', this.value)">
+              ${CLIMA_OPCOES.map(o=>`<option ${f.clima[p]===o?'selected':''}>${o}</option>`).join('')}
+            </select>
+          </div>`).join('')}
+      </div>
+      <div class="field-grid g3" style="margin-top:10px;">
+        <div class="field"><label>Horas de chuva perdidas</label><input class="input" type="number" min="0" step="0.5" value="${esc(f.clima.chuvaHoras)}" oninput="updateClimaField('chuvaHoras', this.valueAsNumber||0)"></div>
+        <div class="field" style="justify-content:center;">
+          <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:13px;">
+            <input type="checkbox" ${f.clima.impacto?'checked':''} onchange="updateClimaField('impacto', this.checked)"> Impactou o cronograma
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section card">
+      <h3>${ic('users')} Efetivo (mão de obra)</h3>
+      <p class="fs-sub">Quantidade por função presente na obra hoje.</p>
+      <table class="row-table"><thead><tr><th style="width:60%">Função</th><th>Qtd.</th><th></th></tr></thead>
+        <tbody>${f.efetivo.map(row=>`
+          <tr>
+            <td><input class="input" list="funcList" value="${esc(row.funcao)}" oninput="updateArrayField('efetivo','${row._k}','funcao',this.value)"></td>
+            <td><input class="input mono" type="number" min="0" value="${esc(row.qtd)}" oninput="updateArrayField('efetivo','${row._k}','qtd',this.valueAsNumber||0)"></td>
+            <td><button class="row-remove" onclick="removeArrayItem('efetivo','${row._k}')">${ic('trash')}</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <datalist id="funcList">${FUNCOES_COMUNS.map(x=>`<option value="${x}">`).join('')}</datalist>
+      <button class="btn btn-sm add-row-btn" onclick="addArrayItem('efetivo',{funcao:'',qtd:1})">${ic('plus')} Adicionar função</button>
+      <p class="section-sub" style="margin-top:8px;">Total: <strong class="mono">${f.efetivo.reduce((s,x)=>s+(Number(x.qtd)||0),0)}</strong> colaboradores</p>
+    </div>
+
+    <div class="form-section card">
+      <h3>${ic('grid')} Equipamentos</h3>
+      <p class="fs-sub">Máquinas e equipamentos utilizados no dia.</p>
+      <table class="row-table"><thead><tr><th style="width:36%">Equipamento</th><th>Qtd.</th><th>Situação</th><th>Horas</th><th></th></tr></thead>
+        <tbody>${f.equipamentos.map(row=>`
+          <tr>
+            <td><input class="input" list="equipList" value="${esc(row.nome)}" oninput="updateArrayField('equipamentos','${row._k}','nome',this.value)"></td>
+            <td><input class="input mono" type="number" min="0" value="${esc(row.qtd)}" oninput="updateArrayField('equipamentos','${row._k}','qtd',this.valueAsNumber||0)"></td>
+            <td><select class="select" onchange="updateArrayField('equipamentos','${row._k}','situacao',this.value)">${SITUACAO_EQUIP.map(s=>`<option ${row.situacao===s?'selected':''}>${s}</option>`).join('')}</select></td>
+            <td><input class="input mono" type="number" min="0" step="0.5" value="${esc(row.horas)}" oninput="updateArrayField('equipamentos','${row._k}','horas',this.valueAsNumber||0)"></td>
+            <td><button class="row-remove" onclick="removeArrayItem('equipamentos','${row._k}')">${ic('trash')}</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <datalist id="equipList">${EQUIP_COMUNS.map(x=>`<option value="${x}">`).join('')}</datalist>
+      <button class="btn btn-sm add-row-btn" onclick="addArrayItem('equipamentos',{nome:'',qtd:1,situacao:'Operando',horas:0})">${ic('plus')} Adicionar equipamento</button>
+    </div>
+
+    <div class="form-section card">
+      <h3>${ic('building')} Atividades executadas</h3>
+      <p class="fs-sub">Descreva cada atividade e anexe fotos com legenda.</p>
+      ${f.atividades.map((a,i)=>activityCardHtml(a,i)).join('') || '<p class="section-sub">Nenhuma atividade adicionada ainda.</p>'}
+      <button class="btn btn-sm add-row-btn" onclick="addArrayItem('atividades',{descricao:'',local:'',disciplina:'Civil',percentual:0,status:'Planejada',fotos:[]})">${ic('plus')} Adicionar atividade</button>
+    </div>
+
+    <div class="form-section card">
+      <h3>${ic('octagon')} Ocorrências</h3>
+      <p class="fs-sub">Atrasos, não conformidades, paralisações ou observações de segurança.</p>
+      ${f.ocorrencias.map(o=>`
+        <div class="occ-row">
+          <input class="input" placeholder="Descrição da ocorrência" value="${esc(o.descricao)}" oninput="updateArrayField('ocorrencias','${o._k}','descricao',this.value)">
+          <select class="select" onchange="updateArrayField('ocorrencias','${o._k}','gravidade',this.value)">${SEVERIDADES.map(s=>`<option ${o.gravidade===s?'selected':''}>${s}</option>`).join('')}</select>
+          <button class="row-remove" onclick="removeArrayItem('ocorrencias','${o._k}')">${ic('trash')}</button>
+        </div>`).join('')}
+      <button class="btn btn-sm add-row-btn" onclick="addArrayItem('ocorrencias',{descricao:'',gravidade:'Baixa'})">${ic('plus')} Adicionar ocorrência</button>
+    </div>
+
+    <div class="form-section card">
+      <h3>${ic('pencil')} Observações gerais</h3>
+      <textarea oninput="updateField('observacoes', this.value)">${esc(f.observacoes)}</textarea>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn" onclick="setView('diario')">Cancelar</button>
+      <button class="btn" ${readOnlyRemote?'disabled':''} onclick="saveForm('rascunho')">${ic('pencil')} Salvar rascunho</button>
+      <button class="btn btn-primary" ${readOnlyRemote?'disabled':''} onclick="saveForm('emitido')">${ic('check')} Emitir RDO</button>
+    </div>
+  `;
+}
+
+function activityCardHtml(a,i){
+  const canPhoto = !!assetsCap;
+  return `
+  <div class="activity-card">
+    <div class="ac-head">
+      <span class="ac-num">Atividade ${i+1}</span>
+      <button class="row-remove" onclick="removeArrayItem('atividades','${a._k}')">${ic('trash')}</button>
+    </div>
+    <div class="field-grid g3">
+      <div class="field span-2"><label>Local / Área</label><input class="input" value="${esc(a.local)}" oninput="updateArrayField('atividades','${a._k}','local',this.value)"></div>
+      <div class="field"><label>Disciplina</label><select class="select" onchange="updateArrayField('atividades','${a._k}','disciplina',this.value)">${optionsWithExtra(DISCIPLINAS,a.disciplina)}</select></div>
+    </div>
+    <div class="desc-photo-row">
+      <div class="field"><label>Descrição da atividade</label>
+        <textarea oninput="updateArrayField('atividades','${a._k}','descricao',this.value)">${esc(a.descricao)}</textarea>
+      </div>
+      <div class="dp-photos">
+        <label>${ic('camera')} Fotos da atividade</label>
+        <div class="photo-grid">
+          ${(a.fotos||[]).map(p=>`
+            <div class="photo-tile">
+              <img src="${blobUrl(p.id)}" alt="foto da atividade" onclick="openLightbox('${p.id}','${esc(p.legenda||'')}')">
+              <button class="p-remove" onclick="removePhoto('${a._k}','${p.id}')">${ic('x')}</button>
+            </div>
+          `).join('')}
+          ${canPhoto ? `
+            <label class="photo-add-tile">
+              ${ic('camera')}<span>Adicionar</span>
+              <input type="file" accept="image/*" multiple style="display:none" onchange="handlePhotoUpload(event,'${a._k}')">
+            </label>` : ''}
+        </div>
+        ${(a.fotos||[]).length ? `
+          <div style="display:grid;gap:6px;margin-top:6px;">
+            ${(a.fotos||[]).map(p=>`<input class="photo-cap-input" placeholder="Legenda da foto" value="${esc(p.legenda)}" oninput="updatePhotoField('${a._k}','${p.id}',this.value)">`).join('')}
+          </div>` : ''}
+        ${!canPhoto ? `<p class="section-sub" style="margin-top:6px;">Anexar fotos requer permissão de edição${usingLocalFallback?' (não disponível no modo local deste navegador)':''}.</p>` : ''}
+      </div>
+    </div>
+    <div class="field-grid g2" style="margin-top:8px;">
+      <div class="field"><label>Status</label><select class="select" onchange="updateArrayField('atividades','${a._k}','status',this.value)">${optionsWithExtra(ACT_STATUS,a.status)}</select></div>
+      <div class="field"><label>Avanço</label>
+        <div class="range-row">
+          <input type="range" min="0" max="100" step="5" value="${a.percentual||0}" oninput="handlePercentInput('${a._k}', this)">
+          <span class="range-val mono" id="pv-${a._k}">${a.percentual||0}%</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---- edição de estado do formulário ---- */
+function updateField(key, value){ formState[key]=value; }
+function updateClimaField(key, value){ formState.clima[key]=value; }
+function updateArrayField(collection, key, field, value){
+  const item=formState[collection].find(x=>x._k===key);
+  if(item) item[field]=value;
+}
+function handlePercentInput(key, input){
+  const item=formState.atividades.find(x=>x._k===key);
+  if(item) item.percentual=Number(input.value);
+  const lbl=document.getElementById('pv-'+key);
+  if(lbl) lbl.textContent=input.value+'%';
+}
+function addArrayItem(collection, obj){
+  obj._k=uid();
+  if(collection==='atividades') obj.fotos=obj.fotos||[];
+  formState[collection].push(obj);
+  renderFormView();
+}
+function removeArrayItem(collection, key){
+  formState[collection]=formState[collection].filter(x=>x._k!==key);
+  renderFormView();
+}
+function updatePhotoField(actKey, photoId, value){
+  const act=formState.atividades.find(x=>x._k===actKey);
+  if(!act) return;
+  const photo=(act.fotos||[]).find(p=>p.id===photoId);
+  if(photo) photo.legenda=value;
+}
+async function handlePhotoUpload(ev, actKey){
+  const files=Array.from(ev.target.files||[]);
+  if(!files.length) return;
+  if(!assetsCap){ toast('Anexo de fotos indisponível neste modo.', 'err'); return; }
+  const act=formState.atividades.find(x=>x._k===actKey);
+  if(!act) return;
+  toast('Enviando '+files.length+' foto(s)...');
+  let convertedCount=0, failCount=0;
+  for(const file of files){
+    try{
+      let toUpload=file, uploadMime=file.type;
+      try{
+        const fixed = await ensureCompatiblePhoto(file);
+        toUpload = fixed.blob; uploadMime = fixed.mime;
+        if(fixed.converted) convertedCount++;
+      }catch(e){
+        console.warn('formato de foto incompatível, tentando enviar original', e);
+      }
+      const res=await assetsCap.upload(toUpload, uploadMime?{type:uploadMime}:undefined);
+      act.fotos = act.fotos || [];
+      act.fotos.push({id:res.id, legenda:'', _k:uid()});
+    }catch(e){
+      console.warn('upload falhou', e);
+      failCount++;
+    }
+  }
+  if(convertedCount) toast(convertedCount+' foto(s) convertida(s) para um formato compatível automaticamente.');
+  if(failCount) toast('Falha ao enviar '+failCount+' foto(s) — formato não suportado.', 'err');
+  renderFormView();
+}
+async function removePhoto(actKey, photoId){
+  const act=formState.atividades.find(x=>x._k===actKey);
+  if(!act) return;
+  act.fotos = (act.fotos||[]).filter(p=>p.id!==photoId);
+  renderFormView();
+  if(assetsCap){
+    try{ await assetsCap.delete(photoId); }catch(e){ /* ignora — nada mais aponta para o id */ }
+  }
+}
+
+/* ---- salvar ---- */
+function stripKeys(obj){
+  const c=JSON.parse(JSON.stringify(obj));
+  delete c._k;
+  ['efetivo','equipamentos','atividades','ocorrencias'].forEach(coll=>{
+    (c[coll]||[]).forEach(x=>{ delete x._k; delete x._row; delete x._col; delete x._sheet; if(x.fotos) x.fotos.forEach(p=>delete p._k); });
+  });
+  delete c.registroFotografico;
+  return c;
+}
+async function saveForm(status){
+  if(!formState.obra || !formState.data){
+    toast('Informe ao menos a obra e a data.', 'err');
+    return;
+  }
+  const payload = stripKeys(formState);
+  payload.status = status;
+  payload.atualizadoEm = new Date().toISOString();
+  if(!editingId){
+    payload.criadoEm = new Date().toISOString();
+    payload.criadoPor = claudeUser.id || null;
+  }
+  delete payload.id;
+
+  try{
+    if(dbCap && !usingLocalFallback){
+      if(editingId){
+        await dbCap.collection('rdos').doc(editingId).set(payload);
+      } else {
+        await dbCap.collection('rdos').add(payload);
+      }
+    } else {
+      if(editingId){
+        const idx=rdos.findIndex(r=>r.id===editingId);
+        if(idx>=0) rdos[idx]=Object.assign({id:editingId}, payload);
+      } else {
+        rdos.unshift(Object.assign({id:uid()}, payload));
+      }
+      persistLocal();
+      demoMode = rdos.length===0;
+    }
+    toast(status==='emitido' ? 'RDO emitido com sucesso.' : 'Rascunho salvo.');
+    editingId=null; formState=null;
+    setView('diario');
+  }catch(e){
+    console.warn('erro ao salvar', e);
+    toast('Não foi possível salvar. Tente novamente.', 'err');
+  }
+}
+
+async function doDelete(id){
+  confirmingDeleteId=null;
+  try{
+    if(dbCap && !usingLocalFallback){
+      await dbCap.collection('rdos').doc(id).delete();
+    } else {
+      rdos=rdos.filter(r=>r.id!==id);
+      persistLocal();
+      demoMode = rdos.length===0;
+      renderCurrentView();
+    }
+    toast('RDO excluído.');
+  }catch(e){
+    toast('Não foi possível excluir.', 'err');
+  }
+}
+
+/* =========================================================================
+   BOOT
+   ========================================================================= */
+boot();
+</script>
